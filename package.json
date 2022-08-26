@@ -1,0 +1,29 @@
+{
+  "name": "plant-growth-monitoring",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dot-william/Plant-Growth-Monitoring.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dot-william/Plant-Growth-Monitoring/issues"
+  },
+  "homepage": "https://github.com/dot-william/Plant-Growth-Monitoring#readme",
+  "dependencies": {
+    "aedes": "^0.47.0",
+    "body-parser": "^1.20.0",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
