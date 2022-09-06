@@ -9,7 +9,7 @@ const database = {
             host : 'localhost',
             user: 'blast',
             password: 'shift12345',
-            database: 'shiftdb'
+            database: 'pgmsdb'
         });
 
         db.connect(function(err){
@@ -65,8 +65,8 @@ const database = {
 
         db.query(sql, (err, result) => {
             if(err) {
-                var currentdate = new Date();
-                var msg = "[" + currentdate  + "]" + "An error has occured when creating the table @ " + location;
+                var currentDate = new Date();
+                var msg = "[" + currentDate  + "]" + "An error has occured when creating the table @ " + location;
                 console.log(msg);
                 throw err; 
             }
@@ -85,7 +85,9 @@ const database = {
         let sql = `INSERT INTO ${location} SET ?`;
         db.query(sql, data, (err, result) => {
             if(err) {
-                console.log("An error has occured when inserting at table " + location );
+                var currentDate = new Date();
+                var msg = "[" + currentDate  + "]" + "An error has occured when creating the table @ " + location;
+                console.log(msg);
                 throw err; 
             }
             console.log(`Data successfully inserted to ${location} table.`);
