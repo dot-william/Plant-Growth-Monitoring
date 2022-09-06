@@ -1,23 +1,6 @@
 const helper = {
-    /** This function generates the error time in datetime format */  
-    getErrorTime : function () {
-        var currentdate = new Date();
-        return currentdate;
-    },
-
-    displayError : function (errorMsg) {
-        let errorDateTime = getErrorTime();
-        console.log("======================");
-        console.log(errorMsg);
-        console.log("@ " + errorDateTime);
-        console.log("======================");
-    },
-    /** This function checks if the dev type in the topic is either master or edge */
-    checkDevType : function (devTopic) {
-        if (devTopic.includes("master") || devTopic.includes("edge")) return true;
-        else return false;
-    },
-
+    
+    
     /** This function assumes that location is either master or edge */
     hasNan : function (location, data) {
         var boolVal;
@@ -74,6 +57,34 @@ const helper = {
                 return null;
             }
         }
+    },
+
+    /** This function checks if the topic is valid in sequence and 
+     * @param {*} topic 
+     * @param {*} validTopics 
+     * @param {*} validTopicType 
+     */
+    checkTopic : function (topic, validTopics, validTopicType) {
+        // Add validation, invalid topic not shift etc, and log the error to the db
+        return true;
+    },
+
+    getDatetime : function() {
+        var currentdate = new Date();
+        return currentdate;
+    },
+
+    logMessage : function (message) {
+        let currentDate = new Date();
+        var logMsg = "[" + currentDate  + "]" + message;
+        console.log(logMsg);
+    },
+
+    errorLog : function (message) {
+        let currentDate = new Date();
+        let errorMsg = message;
+        let errorLog = {datetime: currentDate, msg: errorMsg};
+        return errorLog;
     }
 }
 
