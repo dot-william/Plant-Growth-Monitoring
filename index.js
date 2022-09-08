@@ -47,7 +47,7 @@ aedes.on('publish', async function(packet, client) {
     if(client && isValidTopic) {
         let errorMsg, errorLog;
         var raw_data;
-        let parsedData  
+        let parsedData;  
         if(!packet.topic.includes("images")) {
             raw_data = JSON.parse(packet.payload.toString());
             parsedData = helper.parseData(raw_data);
