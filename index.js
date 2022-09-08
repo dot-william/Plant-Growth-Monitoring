@@ -45,18 +45,33 @@ aedes.on('publish', async function(packet, client) {
     isValidTopic = helper.checkTopic(packet.topic, validTopics, validTopicTypes);
     
     if(client && isValidTopic) {
+        let errorMsg, errorLog;
+        var raw_data;
+        let parsedData  
         if(!packet.topic.includes("images")) {
-            var raw_data = JSON.parse(packet.payload.toString());
-            
+            raw_data = JSON.parse(packet.payload.toString());
+            parsedData = helper.parseData(raw_data);
+            if(parsedData != null) {
+                if(!helper.hasNan(parsedData)) {
+                    db.enterData(parsedData, db_name, location);
+                } else {
+                    errorMsg = "Data does not follow correct packet format.";
+                    errorLog = helper.errorLog(errorMsg);
+                    helper.logMessage(errorMsg);
+                    db.insertTable(errorLog, "error_msg");
+                }
+            } else {
+                errorMsg = "Packet format incorrect.";
+                errorLog = helper.errorLog(errorMsg);
+                helper.logMessage(errorMsg);
+                db.insertTable(errorLog, "error_msg");
+            }
         } else
             helper.logMessage("Image saved locally.");
-        
-
-
     } else if (client && !isValidTopic) {
-        let errorMsg = "Packet format incorrect. Length not at least 4.";
-        let errorLog = helper.errorLog(errorMsg);
+        errorMsg = "Packet format incorrect. Length not at least 4.";
+        errorLog = helper.errorLog(errorMsg);
         helper.logMessage(errorMsg);
-        db.insertTable(msg, "error_msg");
+        db.insertTable(errorLog, "error_msg");
     }
 });
