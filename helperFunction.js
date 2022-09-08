@@ -1,10 +1,9 @@
 const helper = {
     
     
-    /** This function assumes that location is either master or edge */
-    hasNan : function (location, data) {
+    /** This function checks if parsed data contains nan values */
+    hasNan : function (data) {
         var boolVal;
-        if(location.includes("master")) {
         //If either are NaN
         if(isNaN(data.node_id) || isNaN(data.datetime) || isNaN(data.temperature) || isNaN(data.pressure) || isNaN(data.humidity)) {
             console.log("NaN Detected");
@@ -13,60 +12,62 @@ const helper = {
             console.log("None are NaN");
             boolVal = false; //none are nan
         }
-        } else { //If edge
-        if(isNaN(data.node_id) || isNaN(data.datetime) || isNaN(data.light_intensity)) {
-            boolVal = true;
-        } else {
-            console.log("None are NaN");
-            boolVal = false; //none are nan
-        }
-        }
-    
         return boolVal;
     },
 
-    /** This function parses the data based on the location to fit a certain table */
+    /** This function parses the data based on the location to fit a certain table 
+     * @param raw_data the data to be parsed
+    */
     parseData : function (raw_data, location) {
-        if(location.includes("master")) {
-            try {
-                let numId = raw_data["hostname"]["0"].charAt(1);
-                console.log("Num id: " + numId);
-                let node_id = parseInt(numId);
-                let datetime = new Date(raw_data["datetime"]["0"]);
-                let temperature = parseFloat(raw_data["temperature"]["0"]);
-                let pressure = parseFloat(raw_data["pressure"]["0"]);
-                let humidity = parseFloat(raw_data["humidity"]["0"]);
-                let data = {node_id: node_id, datetime: datetime, temperature: temperature, pressure: pressure, humidity: humidity};
-                return data;
-            } catch (e) {
-                console.log("Something happpened in the parsing of data. Returning Null...");
-                return null;
-            }
-        } 
-        else if (location.includes("edge")) {
-            try{
-                let numId = raw_data["hostname"]["0"].charAt(1);
-                console.log("Num id: " + numId);
-                let node_id = parseInt(numId);
-                let datetime = new Date(raw_data["datetime"]["0"]);
-                let light_intensity = parseFloat(raw_data["lightintensity"]["0"]);
-                let data = {node_id: node_id, datetime: datetime, light_intensity: light_intensity}
-                return data; 
-            } catch (e) {
-                console.log("Something happpened in the parsing of data. Returning Null...");
-                return null;
-            }
+        try {
+            let datetime = new Date(raw_data["datetime"]["0"]);
+            let sensorname = raw_data["type"]["0"];
+            let type = raw_data["type"]["0"];
+            let value= parseFloat(raw_data["value"]["0"]);
+            let data = {datetime: datetime, sensorname: sensorname, type: type, value: value};
+            return data;
+        } catch (e) {
+            console.log("Something happpened in the parsing of data. Returning Null...");
+            return null;
         }
     },
 
-    /** This function checks if the topic is valid in sequence and 
-     * @param {*} topic 
-     * @param {*} validTopics 
-     * @param {*} validTopicType 
+    /** This function checks if the topic is valid
+     * @param topic topic sent by the broker
+     * @param validTopics array of valid topics to cross reference
+     * @param validTopicType array of topic type to cross reference e.g. temperature, humidity, etc
+     * @returns boolean if the topic is valid or not
      */
     checkTopic : function (topic, validTopics, validTopicType) {
         // Add validation, invalid topic not shift etc, and log the error to the db
-        return true;
+        let splittedTopic = topic.split('/');
+        let validTopicsLength = (splittedTopic.length - 1);
+        let isValid = true;
+        let topicType = splittedTopic[validTopicsLength]; //gets the type from the end of the topic 
+        let i = 0;
+
+        //Search if topic is valid and its sequence
+        while (i < validTopicsLength && isValid) {
+            if(splittedTopic[i] != validTopics[i])
+                isValid = false;
+            i++;
+        }
+        
+        //If it is still valid, check if topic type is valid
+        if(isValid) {
+            //Initialize first to false
+            isValid = false;
+            i = 0;
+            //Search through the valid topic types (temperature, humidity, etc)
+            while (i < validTopicType.length && !isValid) {
+                // If the topic is valid set isValid to true to stop loop and return variable
+                if(topicType == validTopicType[i])
+                    isValid = true; 
+                i++;
+            }
+        
+        }
+        return isValid;
     },
 
     getDatetime : function() {
@@ -74,12 +75,20 @@ const helper = {
         return currentdate;
     },
 
+    /** This function logs information to the console
+     * @param message the message to be displayed
+     */
     logMessage : function (message) {
         let currentDate = new Date();
         var logMsg = "[" + currentDate  + "]" + message;
         console.log(logMsg);
     },
 
+    /**
+     * 
+     * @param  message string that will be stored 
+     * @returns object that will be stored to the DB
+     */
     errorLog : function (message) {
         let currentDate = new Date();
         let errorMsg = message;
