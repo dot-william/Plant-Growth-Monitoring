@@ -35,10 +35,10 @@ server.listen(port, function(){
     console.log('server started and listening on port ', port);
 });
 
-app.listen(port_app, hostname, () => {
-    console.log(`Server running at:`);
-    console.log('http://' + hostname + ':' + port_app);
-});
+// app.listen(port_app, hostname, () => {
+//     console.log(`Server running at:`);
+//     console.log('http://' + hostname + ':' + port_app);
+// });
 
 // Broker
 aedes.on('publish', async function(packet, client) {
