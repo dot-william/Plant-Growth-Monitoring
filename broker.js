@@ -31,7 +31,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 // Initialize DB Connection
-db.connect();
+// Create connection https://pimylifeup.com/raspberry-pi-mysql/
+const dbSQL = mysql.createConnection({
+    host : 'localhost',
+    user: 'blast',
+    password: 'shift12345',
+    database: 'pgmsdb'
+});
+
+dbSQL.connect(function(err){
+    if(err){
+      helper.displayError("An error has occured when trying to connect to db.");
+      throw err;
+    }
+    console.log("MySQL Connected...");
+});
 
 server.listen(port, function(){
     console.log('server started and listening on port ', port);
