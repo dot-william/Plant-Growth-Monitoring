@@ -68,7 +68,7 @@ aedes.on('publish', async function(packet, client) {
         } else
             helper.logMessage("Image saved locally.");
     } else if (client && !isValidTopic) {
-        errorMsg = "Packet format incorrect. Length not at least 4.";
+        errorMsg = "Invalid topic.";
         errorLog = helper.errorLog(errorMsg);
         helper.logMessage(errorMsg);
         db.insertTable(errorLog, "error_msg");
