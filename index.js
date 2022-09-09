@@ -5,8 +5,7 @@ const port = 1883;
 
 //Express Server and MySQL 
 const express = require('express');
-//const db = require('./models/db.js');
-const mysql = require('mysql');
+const db = require('./models/db.js');
 const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
@@ -29,33 +28,12 @@ const location = address + '_' + experiment + '_' + node;
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-// // Initialize DB Connection
-// db.connect();
+// Initialize DB Connection
+db.connect();
 
-// server.listen(port, function(){
-//     console.log('server started and listening on port ', port);
-// });
-
-// Create connection https://pimylifeup.com/raspberry-pi-mysql/
-const db = mysql.createConnection({
-    host : 'localhost',
-    user: 'blast',
-    password: 'shift12345',
-    database: 'shiftdb'
-  });
-  
-  //Connect 
-  db.connect(function(err){
-    if(err){
-      displayError("An error has occured when trying to connect to db.");
-      throw err;
-    }
-    console.log("MySQL Connected...");
-  });
-  
-  server.listen(port, function(){
-    console.log('server started and listening on port ', port)
-  })
+server.listen(port, function(){
+    console.log('server started and listening on port ', port);
+});
 
 
 
