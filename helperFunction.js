@@ -6,10 +6,8 @@ const helper = {
         var boolVal;
         //If either are NaN
         if(isNaN(data.datetime) || isNaN(data.value)) {
-            console.log("NaN Detected");
             boolVal = true;
         } else {
-            console.log("None are NaN");
             boolVal = false; //none are nan
         }
         return boolVal;
