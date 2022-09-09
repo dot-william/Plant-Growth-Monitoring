@@ -5,7 +5,7 @@ const helper = {
     hasNan : function (data) {
         var boolVal;
         //If either are NaN
-        if(isNaN(data.node_id) || isNaN(data.datetime) || isNaN(data.temperature) || isNaN(data.pressure) || isNaN(data.humidity)) {
+        if(isNaN(data.datetime) || isNaN(data.sensorname) || isNaN(data.type) || isNaN(data.value)) {
             console.log("NaN Detected");
             boolVal = true;
         } else {
