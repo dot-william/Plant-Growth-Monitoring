@@ -10,7 +10,7 @@ const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 var hostname = "localhost";
-
+var port_app = 8080;
 // App set-up
 const app = express();
 
@@ -35,10 +35,7 @@ server.listen(port, function(){
     console.log('server started and listening on port ', port);
 });
 
-// app.listen(port_app, hostname, () => {
-//     console.log(`Server running at:`);
-//     console.log('http://' + hostname + ':' + port_app);
-// });
+
 
 // Broker
 aedes.on('publish', async function(packet, client) {
@@ -74,4 +71,9 @@ aedes.on('publish', async function(packet, client) {
         helper.logMessage(errorMsg);
         db.insertTable(errorLog, "error_msg");
     }
+});
+
+app.listen(port_app, hostname, () => {
+    console.log(`Server running at:`);
+    console.log('http://' + hostname + ':' + port_app);
 });
