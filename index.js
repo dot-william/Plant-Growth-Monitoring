@@ -5,7 +5,7 @@ const port = 1883;
 
 //Express Server and MySQL 
 const express = require('express');
-const db = require('./models/db.js');
+//const db = require('./models/db.js');
 const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
