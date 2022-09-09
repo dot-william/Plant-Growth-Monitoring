@@ -9,7 +9,7 @@ const db = require('./models/db.js');
 const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-
+const mysql = require('mysql');
 
 // App set-up
 const app = express();
