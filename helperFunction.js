@@ -4,6 +4,7 @@ const helper = {
     /** This function checks if parsed data contains nan values */
     hasNan : function (data) {
         var boolVal;
+        console.log(data);
         //If either are NaN
         if(isNaN(data.datetime) || isNaN(data.sensorname) || isNaN(data.type) || isNaN(data.value)) {
             console.log("NaN Detected");
