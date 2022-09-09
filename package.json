@@ -2,7 +2,7 @@
   "name": "plant-growth-monitoring",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "broker.js",
   "scripts": {
     "start": "nodemon broker.js",
     "test": "echo \"Error: no test specified\" && exit 1"

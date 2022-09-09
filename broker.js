@@ -1,5 +1,5 @@
 //Broker
-const aedes = require ('aedes');
+const aedes = require ('aedes')();
 const server = require('net').createServer(aedes.handle);
 const port = 1883;
 
@@ -9,10 +9,12 @@ const db = require('./models/db.js');
 const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-var hostname = "localhost";
-var port_app = 8080;
+
+
 // App set-up
 const app = express();
+var hostname = "localhost";
+var port_app = 8080;
 
 //Valid topics and type to check
 const validTopics = ["sensor", "dlsu", "node-1"]
