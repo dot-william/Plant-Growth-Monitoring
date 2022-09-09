@@ -5,6 +5,10 @@ const helper = {
     hasNan : function (data) {
         var boolVal;
         console.log(data);
+        console.log(isNaN(data.datetime));
+        console.log(isNaN(data.sensorname));
+        console.log(isNaN(data.type));
+        console.log(isNaN(data.value));
         //If either are NaN
         if(isNaN(data.datetime) || isNaN(data.sensorname) || isNaN(data.type) || isNaN(data.value)) {
             console.log("NaN Detected");
