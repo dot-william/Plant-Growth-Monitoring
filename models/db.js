@@ -70,7 +70,6 @@ const database = {
                 console.log(msg);
                 throw err; 
             }
-            console.log("Table created, inserting data...");
             //Insert data to table after creating the table
             this.insertTable(data, location);
         });
@@ -90,7 +89,8 @@ const database = {
                 console.log(msg);
                 throw err; 
             }
-            console.log(`Data successfully inserted to ${location} table.`);
+            helper.logMessage(`Data successfully inserted to ${location} table.`)
+            
         });
     },
 
