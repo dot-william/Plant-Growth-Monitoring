@@ -78,7 +78,7 @@ const helper = {
      */
     logMessage : function (message) {
         let currentDate = new Date();
-        var logMsg = "[" + currentDate  + "]" + message;
+        var logMsg = "[" + currentDate  + "]" + " " + message;
         console.log(logMsg);
     },
 
