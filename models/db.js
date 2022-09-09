@@ -5,14 +5,14 @@ const database = {
     //Connects to the DB
     connect : function () {
         // Create connection https://pimylifeup.com/raspberry-pi-mysql/
-        var db = mysql.createConnection({
+        this.db = mysql.createConnection({
             host : 'localhost',
             user: 'blast',
             password: 'shift12345',
             database: 'pgmsdb'
         });
 
-        db.connect(function(err){
+        this.db.connect(function(err){
             if(err){
               helper.displayError("An error has occured when trying to connect to db.");
               throw err;
@@ -33,7 +33,7 @@ const database = {
             AND table_name = '${location}';`;
 
         //Query to check if table exists
-        db.query(sql, (err, result, fields)=> {
+        this.db.query(sql, (err, result, fields)=> {
             if(err) {
                 console.log("An error has occured when checking table " + location);
                 throw err;
@@ -63,7 +63,7 @@ const database = {
                             value FLOAT,
                             PRIMARY KEY (id))`;
 
-        db.query(sql, (err, result) => {
+        this.db.query(sql, (err, result) => {
             if(err) {
                 var currentDate = new Date();
                 var msg = "[" + currentDate  + "]" + "An error has occured when creating the table @ " + location;
@@ -83,7 +83,7 @@ const database = {
     insertTable : function (data, location) {
         console.log(`Table ${location} exists, inserting...`);
         let sql = `INSERT INTO ${location} SET ?`;
-        db.query(sql, data, (err, result) => {
+        this.db.query(sql, data, (err, result) => {
             if(err) {
                 var currentDate = new Date();
                 var msg = "[" + currentDate  + "]" + "An error has occured when creating the table @ " + location;
