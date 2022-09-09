@@ -9,7 +9,7 @@ const db = require('./models/db.js');
 const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-const mysql = require('mysql');
+
 
 // App set-up
 const app = express();
@@ -31,21 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 // Initialize DB Connection
-// Create connection https://pimylifeup.com/raspberry-pi-mysql/
-const dbSQL = mysql.createConnection({
-    host : 'localhost',
-    user: 'blast',
-    password: 'shift12345',
-    database: 'pgmsdb'
-});
-
-dbSQL.connect(function(err){
-    if(err){
-      helper.displayError("An error has occured when trying to connect to db.");
-      throw err;
-    }
-    console.log("MySQL Connected...");
-});
+db.connect();
 
 server.listen(port, function(){
     console.log('server started and listening on port ', port);
