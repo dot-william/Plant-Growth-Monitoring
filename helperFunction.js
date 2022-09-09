@@ -7,7 +7,9 @@ const helper = {
         console.log(data);
         console.log(isNaN(data.datetime));
         console.log(isNaN(data.sensorname));
+        console.log(data.sensorname)
         console.log(isNaN(data.type));
+        console.log(data.type);
         console.log(isNaN(data.value));
         //If either are NaN
         if(isNaN(data.datetime) || isNaN(data.sensorname) || isNaN(data.type) || isNaN(data.value)) {
