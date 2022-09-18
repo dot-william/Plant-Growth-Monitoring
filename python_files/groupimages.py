@@ -6,7 +6,7 @@ PATH_NAME = "/home/student/Test_Images"
 # Procedure for parsing filenames
 def image_timestamp(filename):
     # Example filename: "IMG_IMG_20211218_100625.jpg"
-    d
+
     date = filename.split("_")[1]
     time = filename.split("_")[2].split(".")[0] # split time and file extension
     return date, time
