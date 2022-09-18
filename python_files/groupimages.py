@@ -1,8 +1,8 @@
 import os
 from operator import itemgetter
 EXTENSIONS = ['.png', '.jpg']
-# PATH_NAME = "/home/student/Test_Images"
-PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
+PATH_NAME = "/home/student/Test_Images"
+# PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
 # Procedure for parsing filenames
 def image_timestamp(filename):
     # Example filename: "IMG_IMG_20211218_100625.jpg"
