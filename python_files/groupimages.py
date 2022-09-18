@@ -14,7 +14,7 @@ def image_timestamp(filename):
 def get_files_list(root_dir, E):
     file_list, file_list_parsed = [], []
 
-    for root, directories, filenames in os.walk(root_dir, topdown=True):
+    for root, directories, filenames in os.walk(root_dir, topdown=False):
         for filename in filenames:
             print(filename)
             #If png is in filename
