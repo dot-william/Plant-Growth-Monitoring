@@ -9,6 +9,7 @@ def get_files_list(root_dir, E):
     for root, directories, filenames in os.walk(root_dir):
         for filename in filenames:
             if any(ext in filename for ext in E):
+                print(E)
                 print(root)
                 print(filename)
                 file_list.append(os.path.join(root, filename))
