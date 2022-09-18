@@ -1,6 +1,6 @@
 import os
 
-EXTENSIONS = ['.jpg']
+EXTENSIONS = ['.png', '.jpg']
 PATH_NAME = "/home/student/Test_Images"
 
 def get_files_list(root_dir, E):
