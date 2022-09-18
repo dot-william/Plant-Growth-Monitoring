@@ -27,5 +27,6 @@ def get_files_list(root_dir, E):
     return file_list, file_list_parsed
 
 my_images, my_images_parsed = get_files_list(PATH_NAME, EXTENSIONS)
-sorted(my_images_parsed, key=itemgetter(0,1)) # sort to be sure that the images are in chronological order
+
+my_images_parsed = sorted(my_images_parsed, key=itemgetter(0,1)) # sort to be sure that the images are in chronological order
 print(my_images_parsed, len(my_images_parsed))
