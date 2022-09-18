@@ -1,8 +1,8 @@
 import os
-
+from operator import itemgetter
 EXTENSIONS = ['.png', '.jpg']
-PATH_NAME = "/home/student/Test_Images"
-# PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
+# PATH_NAME = "/home/student/Test_Images"
+PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
 # Procedure for parsing filenames
 def image_timestamp(filename):
     # Example filename: "IMG_IMG_20211218_100625.jpg"
@@ -15,7 +15,7 @@ def image_timestamp(filename):
 def get_files_list(root_dir, E):
     file_list, file_list_parsed = [], []
 
-    for root, directories, filenames in os.walk(root_dir, topdown=False):
+    for root, directories, filenames in os.walk(root_dir):
         for filename in filenames:
             print(filename)
             #If png is in filename
@@ -27,5 +27,5 @@ def get_files_list(root_dir, E):
     return file_list, file_list_parsed
 
 my_images, my_images_parsed = get_files_list(PATH_NAME, EXTENSIONS)
-my_images_parsed.sort() # sort to be sure that the images are in chronological order
+sorted(my_images_parsed, key=itemgetter(0,1)) # sort to be sure that the images are in chronological order
 print(my_images_parsed, len(my_images_parsed))
