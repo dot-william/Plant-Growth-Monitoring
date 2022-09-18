@@ -2,7 +2,7 @@ import os
 
 EXTENSIONS = ['.png', '.jpg']
 PATH_NAME = "/home/student/Test_Images"
-
+# PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
 # Procedure for parsing filenames
 def image_timestamp(filename):
     # Example filename: "IMG_IMG_20211218_100625.jpg"
@@ -26,5 +26,5 @@ def get_files_list(root_dir, E):
     return file_list, file_list_parsed
 
 my_images, my_images_parsed = get_files_list(PATH_NAME, EXTENSIONS)
-
+my_images_parsed.sort()
 print(my_images_parsed, len(my_images_parsed))
