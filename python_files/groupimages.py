@@ -4,8 +4,8 @@ from operator import itemgetter
 import pandas as pd
 
 EXTENSIONS = ['.png', '.jpg']
-# PATH_NAME = "/home/student/Test_Images"
-PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
+PATH_NAME = "/home/student/Test_Images"
+#PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
 
 # Gets date value from the string
 def get_date(date):
