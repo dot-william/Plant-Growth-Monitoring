@@ -94,8 +94,7 @@ if __name__ == '__main__':
     img_data = pd.DataFrame(data)
     # If there are images
     if img_data.shape[0] != 0:
-        img_data.sort_values(['Timestamp', 'Time'])
-        print(img_data)
+        img_data = img_data.sort_values(['Timestamp', 'Time'])
         create_folders_plants()
         print(img_data)
         len_img = img_data.shape[0]
