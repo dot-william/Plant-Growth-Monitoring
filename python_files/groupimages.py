@@ -39,15 +39,11 @@ def get_images(root_dir, E):
                 d['Path'] = os.path.join(root, filename)
                 img_files.append(dict(d))
 
-    return img_files
+    return pd.DataFrame(img_files).sort_values(['Timestamps', 'Time'])
 
 # Main function
 img_data = get_images(PATH_NAME, EXTENSIONS)
 
 #my_images_parsed = sorted(my_images_parsed, key=itemgetter(0,1)) # sort by date then time
-img_data = pd.DataFrame(img_data)
 print(img_data)
 
-print("Sorted:")
-sorted_img_data = img_data.sort_values(['Timestamps', 'Time'])
-print(sorted_img_data)
