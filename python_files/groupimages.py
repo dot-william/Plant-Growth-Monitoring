@@ -4,8 +4,8 @@ from operator import itemgetter
 import pandas as pd
 
 EXTENSIONS = ['.png', '.jpg']
-PATH_NAME = "/home/student/Test_Images"
-# PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
+# PATH_NAME = "/home/student/Test_Images"
+PATH_NAME = r"C:\Users\willi\Desktop\_Thesis\Test_images"
 
 # Gets date value from the string
 def get_date(date):
@@ -23,27 +23,31 @@ def image_datetime(filename):
     return date, time
 
 # Finding files with specified extensions
-def get_files_list(root_dir, E):
-    file_list, file_list_parsed, timestamps = [], [], []
+def get_images(root_dir, E):
+    img_files = []
 
     for root, directories, filenames in os.walk(root_dir):
         for filename in filenames:
             print(filename)
             #If png is in filename
             if any(ext in filename for ext in E):
-                file_list.append(os.path.join(root, filename))
                 img_date, img_time = image_datetime(filename)
-                file_list_parsed.append((img_date, img_time))
                 d = {}
                 d['Year'], d['Month'], d['Day'] = get_date(img_date)
+                d['Timestamps'] = img_date
                 d['Time'] = get_time(img_time)
-                timestamps.append(dict(d))
+                d['Path'] = os.path.join(root, filename)
+                img_files.append(dict(d))
 
-    return file_list, file_list_parsed, timestamps
+    return img_files
 
 # Main function
-my_images, my_images_parsed, timestamps = get_files_list(PATH_NAME, EXTENSIONS)
+img_data = get_images(PATH_NAME, EXTENSIONS)
 
-my_images_parsed = sorted(my_images_parsed, key=itemgetter(0,1)) # sort by date then time
-print(my_images_parsed, len(my_images_parsed))
-print(pd.DataFrame(timestamps))
+#my_images_parsed = sorted(my_images_parsed, key=itemgetter(0,1)) # sort by date then time
+img_data = pd.DataFrame(img_data)
+print(img_data)
+
+print("Sorted:")
+sorted_img_data = img_data.sort_values(['Timestamps', 'Time'])
+print(sorted_img_data)
