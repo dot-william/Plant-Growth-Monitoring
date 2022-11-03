@@ -23,7 +23,7 @@ const validTopicTypes = ["lightintensity", "temperature", "humidity", "soilmoist
 // DB variables
 const db_name = `pgmsdb`;
 
-// Table Name
+// Table Name for Database
 const experiment = `cherrytomato`;
 const address = `dlsu`;
 const node = `sensornode`;
