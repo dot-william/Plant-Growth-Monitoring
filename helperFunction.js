@@ -14,15 +14,16 @@ const helper = {
     },
 
     /** This function parses the data based on the location to fit a certain table 
-     * @param raw_data the data to be parsed
+     * @param raw_data the data to be parse
     */
     parseData : function (raw_data) {
         try {
             let datetime = new Date(raw_data["datetime"]["0"]);
+            let exp_num = parseInt(raw_data["exp_num"]["0"]);
             let sensorname = raw_data["type"]["0"];
             let type = raw_data["type"]["0"];
             let value= parseFloat(raw_data["value"]["0"]);
-            let data = {datetime: datetime, sensorname: sensorname, type: type, value: value};
+            let data = {datetime: datetime, exp_num: exp_num, sensorname: sensorname, type: type, value: value};
             return data;
         } catch (e) {
             console.log("Something happpened in the parsing of data. Returning Null...");
@@ -83,7 +84,7 @@ const helper = {
     },
 
     /**
-     * 
+     * This function logs the error message to the database
      * @param  message string that will be stored 
      * @returns object that will be stored to the DB
      */
