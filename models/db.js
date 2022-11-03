@@ -56,7 +56,8 @@ const database = {
     */
     createTable : function (data, location) {
         let sql = `CREATE TABLE ${location}(
-                            id INT(11) AUTO_INCREMENT, 
+                            id INT(11) AUTO_INCREMENT,
+                            exp_num TINYINT(1),  
                             datetime DATETIME,
                             sensorname VARCHAR(20),
                             type VARCHAR(20),
