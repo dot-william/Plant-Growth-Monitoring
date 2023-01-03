@@ -32,7 +32,7 @@ def on_publish(client, userdata, mid):
     print("Message published")
 
 client = mqtt.Client("Server")
-client.connect(mqttIP, mqttPort)
+client.connect_async(mqttIP, mqttPort)
 
 client.loop_start()
 
