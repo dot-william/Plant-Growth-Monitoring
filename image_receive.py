@@ -32,11 +32,12 @@ def on_publish(client, userdata, mid):
 
 client = mqtt.Client("Server")
 # client.connect(mqttIP, mqttPort)
-client.connect("mqtt.eclipseproject.io")
+mqttIP = "mqtt.eclipseproject.io"
+client.connect(mqttIP)
 client.subscribe("/sensor/dlsu/node-1/images")
-client.on_connect = on_connect
+# client.on_connect = on_connect
 client.on_message = on_message
-client.on_publish = on_publish
+# client.on_publish = on_publish
 #client.subscribe("/sensor/dlsu/node-1/images")
 
 client.loop_forever()
