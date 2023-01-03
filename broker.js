@@ -78,7 +78,7 @@ aedes.on('publish', async function(packet, client) {
             var img = Buffer.from(raw_data["image_data"], 'base64')
             var dest = '/home/pi/images/' + filename;
             console.log("Saving to: " + dest);
-            fs.writeFile(dest, img, function (err) {
+            fs.writeFile(filename, img, function (err) {
                 if(err) throw err;
                 helper.logMessage("Image saved locally.");
             })
