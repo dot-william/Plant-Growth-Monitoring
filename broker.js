@@ -70,17 +70,19 @@ aedes.on('publish', async function(packet, client) {
         } else
             // When image is published
             raw_data = JSON.parse(packet.payload.toString());
-            helper.logMessage("Image saved locally.");
+            
             var filename = raw_data["filename"];
             console.log(filename);
             //console.log(raw_data);
-            var img = ba.a2b_base64(raw_data["image_data"]);
+            //var img = ba.a2b_base64(raw_data["image_data"]);
+            var img = Buffer.from(raw_data["image_data"], 'base64')
             var dest = '/home/pi/images/' + filename;
             console.log("Saving to: " + dest);
             fs.writeFile(dest, img, function (err) {
                 if(err) throw err;
+                helper.logMessage("Image saved locally.");
             })
-
+            
     } else if (client && !isValidTopic) {
         errorMsg = "Invalid topic.";
         errorLog = helper.errorLog(errorMsg);
