@@ -76,7 +76,7 @@ aedes.on('publish', async function(packet, client) {
             //console.log(raw_data);
             //var img = ba.a2b_base64(raw_data["image_data"]);
             var img = Buffer.from(raw_data["image_data"], 'base64')
-            var dest = '/home/student/Plant_Images/Raw' + filename;
+            var dest = '/home/student/Plant_Images/Raw/' + filename;
             console.log("Saving to: " + dest);
             fs.writeFile(dest, img, function (err) {
                 if(err) throw err;
