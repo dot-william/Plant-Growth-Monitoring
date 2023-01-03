@@ -10,6 +10,7 @@ const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const ba = require('binascii');
+const fs = require('fs');
 
 // App set-up
 const app = express();
@@ -28,7 +29,6 @@ const experiment = `cherrytomato`;
 const address = `dlsu`;
 const node = `sensornode`;
 const location = address + '_' + experiment + '_' + node;
-
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
@@ -71,7 +71,15 @@ aedes.on('publish', async function(packet, client) {
             // When image is published
             raw_data = JSON.parse(packet.payload.toString());
             helper.logMessage("Image saved locally.");
-            console.log(raw_data);
+            var filename = raw_data["filename"];
+            console.log(filename);
+            //console.log(raw_data);
+            var img = ba.a2b_base64(raw_data["image_data"]);
+            var dest = '/home/pi/images/' + filename;
+            console.log("Saving to: " + dest);
+            fs.writeFile(dest, img, function (err) {
+                if(err) throw err;
+            })
 
     } else if (client && !isValidTopic) {
         errorMsg = "Invalid topic.";
