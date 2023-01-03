@@ -2,6 +2,7 @@ import paho.mqtt.client as mqtt
 import binascii
 import json
 from config import mqttIP, mqttPort
+import time
 
 # RPI Destination
 dest = '/home/pi/images/'
@@ -31,13 +32,18 @@ def on_publish(client, userdata, mid):
     print("Message published")
 
 client = mqtt.Client("Server")
-# client.connect(mqttIP, mqttPort)
-mqttIP = "mqtt.eclipseproject.io"
-client.connect(mqttIP)
-client.subscribe("/sensor/dlsu/node-1/images")
-# client.on_connect = on_connect
-client.on_message = on_message
-# client.on_publish = on_publish
-#client.subscribe("/sensor/dlsu/node-1/images")
+client.connect(mqttIP, mqttPort)
 
-client.loop_forever()
+client.loop_start()
+
+client.subscribe("/sensor/dlsu/node-1/images")
+client.on_connect = on_connect
+time.sleep(30)
+client.on_message = on_message
+client.loop_end()
+
+
+# client.on_publish = on_publish
+# #client.subscribe("/sensor/dlsu/node-1/images")
+
+# client.loop_forever()
