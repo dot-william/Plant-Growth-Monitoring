@@ -30,8 +30,9 @@ def on_message(client, userdata, msg):
 def on_publish(client, userdata, mid):
     print("Message published")
 
-client = mqtt.Client()
-client.connect(mqttIP, mqttPort)
+client = mqtt.Client("Server")
+# client.connect(mqttIP, mqttPort)
+client.connect("mqtt.eclipseproject.io")
 client.subscribe("/sensor/dlsu/node-1/images")
 client.on_connect = on_connect
 client.on_message = on_message
