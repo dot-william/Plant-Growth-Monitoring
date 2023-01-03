@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from node_info import SITENAME, HOSTNAME, ROLE
+#from node_info import SITENAME, HOSTNAME, ROLE
 
 sensorLoggingDelay = 600 # sensor logging delay in sec, default 600s for 10mins
 imageCaptureDelay = 3600 # image capture delay in sec, default 3600s for 1hr
@@ -23,13 +23,13 @@ csvDir = dataDir + csvFolderName
 edgePiImgDir = dataDir + imageFolderName
 
 # format the csv filenames
-masterPiCSVFilename = masterPiCSVFilename.format(hostname=HOSTNAME, sitename=SITENAME)
-edgePiCSVFilename = edgePiCSVFilename.format(hostname=HOSTNAME, sitename=SITENAME)
+# masterPiCSVFilename = masterPiCSVFilename.format(hostname=HOSTNAME, sitename=SITENAME)
+# edgePiCSVFilename = edgePiCSVFilename.format(hostname=HOSTNAME, sitename=SITENAME)
 
-if ROLE == 'edge':
-    csvfilename = edgePiCSVFilename
-elif ROLE == 'master':
-    csvfilename = masterPiCSVFilename
+# if ROLE == 'edge':
+#     csvfilename = edgePiCSVFilename
+# elif ROLE == 'master':
+#     csvfilename = masterPiCSVFilename
 
 # sensorPublishTopic = f"/shift/{SITENAME}/{ROLE}/{HOSTNAME}/sensorvalues"
 # cameraPublishTopic = f"/shift/{SITENAME}/edge/{HOSTNAME}/images"
