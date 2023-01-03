@@ -68,7 +68,11 @@ aedes.on('publish', async function(packet, client) {
                 db.insertTable(errorLog, "error_msg");
             }
         } else
+            // When image is published
+            raw_data = JSON.parse(packet.payload.toString());
             helper.logMessage("Image saved locally.");
+            console.log(raw_data);
+            
     } else if (client && !isValidTopic) {
         errorMsg = "Invalid topic.";
         errorLog = helper.errorLog(errorMsg);
