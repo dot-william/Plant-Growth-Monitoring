@@ -9,7 +9,7 @@ const db = require('./models/db.js');
 const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-
+const ba = require('binascii');
 
 // App set-up
 const app = express();
@@ -72,7 +72,7 @@ aedes.on('publish', async function(packet, client) {
             raw_data = JSON.parse(packet.payload.toString());
             helper.logMessage("Image saved locally.");
             console.log(raw_data);
-            
+
     } else if (client && !isValidTopic) {
         errorMsg = "Invalid topic.";
         errorLog = helper.errorLog(errorMsg);
