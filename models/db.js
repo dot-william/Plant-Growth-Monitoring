@@ -59,7 +59,7 @@ const database = {
                                             datetime DATETIME, expt_num TINYINT(1), 
                                             sitename VARCHAR(20), 
                                             type VARCHAR(25), 
-                                            index TINYINT(1), 
+                                            sensor_idx TINYINT(1), 
                                             value FLOAT, 
                                             PRIMARY KEY (id))`;
         this.db.query(sql, (err, result) => {
