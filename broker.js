@@ -78,7 +78,7 @@ aedes.on('publish', async function(packet, client) {
                 helper.logMessage(errorMsg);
                 db.insertTable(errorLog, "error_msg");
             }
-        } else
+        } else if (packet.topic.includes("images")) {
             // When image is published
             console.log("Im inside images");
             raw_data = JSON.parse(packet.payload.toString());
@@ -99,6 +99,7 @@ aedes.on('publish', async function(packet, client) {
                 helper.logMessage(errorMsg);
                 db.insertTable(errorLog, "error_msg");
             }
+        }
     } else if (client && !isValidTopic) {
         errorMsg = "Invalid topic.";
         errorLog = helper.errorLog(errorMsg);
