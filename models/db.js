@@ -55,7 +55,7 @@ const database = {
      * @param location name of the table where data will be stored
     */
     createTable : function (data, location) { 
-        let sql = `CREATE TABLE ${location}(id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), sitename VARCHAR(20), type VARCHAR(25), index TINYINT(1), PRIMARY KEY (id))`;
+        let sql = `CREATE TABLE ${location}(id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), sitename VARCHAR(20), type VARCHAR(25), sensor_idx TINYINT(1), PRIMARY KEY (id))`;
         this.db.query(sql, (err, result) => {
             if(err) {
                 var currentDate = new Date();
