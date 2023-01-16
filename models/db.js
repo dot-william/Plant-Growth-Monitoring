@@ -58,10 +58,10 @@ const database = {
         let sql = `CREATE TABLE ${location}(
                             id INT AUTO_INCREMENT,
                             datetime DATETIME,
-                            expt_num TINYINT,  
+                            expt_num TINYINT(1),  
                             sitename VARCHAR(20),
                             type VARCHAR(25),
-                            index TINYINT,
+                            index TINYINT(1),
                             value FLOAT,
                             PRIMARY KEY (id))`;
 
