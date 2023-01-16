@@ -52,7 +52,7 @@ server.listen(port, function(){
 // Broker
 aedes.on('publish', async function(packet, client) {
     var isValidTopic = helper.checkTopic(packet.topic, validTopics, validTopicTypes);
-    
+    console.log("Topic Validity:" + isValidTopic);
     if(client && isValidTopic) {
         let errorMsg, errorLog;
         var raw_data;
