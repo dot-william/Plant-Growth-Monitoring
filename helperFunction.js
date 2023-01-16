@@ -20,7 +20,7 @@ const helper = {
         try {
             let datetime = new Date(raw_data["datetime"]["0"]);
             let expt_num = parseInt(raw_data["expt_num"]["0"]);
-            let sitename= raw_data["type"]["0"];
+            let sitename= raw_data["sitename"]["0"];
             let type = raw_data["type"]["0"];
             //insert statement to convert integer to
             let index = parseInt(raw_data["index"]["0"]);
