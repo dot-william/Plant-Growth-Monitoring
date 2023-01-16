@@ -23,12 +23,13 @@ const helper = {
             let sitename= raw_data["type"]["0"];
             let type = raw_data["type"]["0"];
             //insert statement to convert integer to
-            //let index = parseInt(raw_data["index"]["0"]);
+            let index = parseInt(raw_data["index"]["0"]);
             let value= parseFloat(raw_data["value"]["0"]);
             let data = {datetime: datetime, 
                         expt_num: expt_num, 
                         sitename: sitename, 
                         type: type, 
+                        index: index,
                         value: value};
             return data;
         } catch (e) {
