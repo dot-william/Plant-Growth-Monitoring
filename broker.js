@@ -60,6 +60,7 @@ aedes.on('publish', async function(packet, client) {
         console.log("Topic: " + packet.topic);
         console.log("topic includes images: " + packet.topic.includes("images"));
         if(!packet.topic.includes("images")) {
+            console.log("Hello world im inside env data");
             raw_data = JSON.parse(packet.payload.toString());
             parsedData = helper.parseData(raw_data);
             if(parsedData != null) {
@@ -79,6 +80,7 @@ aedes.on('publish', async function(packet, client) {
             }
         } else
             // When image is published
+            console.log("Im inside images");
             raw_data = JSON.parse(packet.payload.toString());
             console.log(raw_data);
             try {
