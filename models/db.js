@@ -56,11 +56,12 @@ const database = {
     */
     createTable : function (data, location) {
         let sql = `CREATE TABLE ${location}(
-                            id INT(11) AUTO_INCREMENT,
-                            exp_num TINYINT(1),  
+                            id INT AUTO_INCREMENT,
                             datetime DATETIME,
-                            sensorname VARCHAR(20),
-                            type VARCHAR(20),
+                            expt_num TINYINT,  
+                            sitename VARCHAR(20),
+                            type VARCHAR(25),
+                            index TINYINT,
                             value FLOAT,
                             PRIMARY KEY (id))`;
 
@@ -94,15 +95,6 @@ const database = {
             
         });
     },
-
-    /** Gets data based on parameter (to be implemented in the future) 
-     * 
-     */
-
-    //findData : function (table, query) {
-    //     let sql = `SELECT * FROM information_schema.tables`
-    // }
-
 }
 
 /* Exports the object `database` (defined above) when another script exports from this file */

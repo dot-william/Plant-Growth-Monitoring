@@ -19,11 +19,18 @@ const helper = {
     parseData : function (raw_data) {
         try {
             let datetime = new Date(raw_data["datetime"]["0"]);
-            let exp_num = parseInt(raw_data["exp_num"]["0"]);
-            let sensorname = raw_data["type"]["0"];
+            let expt_num = parseInt(raw_data["expt_num"]["0"]);
+            let sitename= raw_data["type"]["0"];
             let type = raw_data["type"]["0"];
+            //insert statement to convert integer to
+            let index = parseInt(raw_data["index"]["0"]);
             let value= parseFloat(raw_data["value"]["0"]);
-            let data = {datetime: datetime, exp_num: exp_num, sensorname: sensorname, type: type, value: value};
+            let data = {datetime: datetime, 
+                        expt_num: expt_num, 
+                        sitename: sitename, 
+                        type: type, 
+                        index: index,
+                        value: value};
             return data;
         } catch (e) {
             console.log("Something happpened in the parsing of data. Returning Null...");
