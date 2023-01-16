@@ -17,8 +17,15 @@ var hostname = "localhost";
 var port_app = 8080;
 
 //Valid topics and type to check
-const validTopics = ["sensor", "dlsu", "node-1"]
-const validTopicTypes = ["lightintensity", "temperature", "humidity", "soilmoisture", "ph", "images"]
+const validTopics = ["sensor", "dlsu", "node-1"];
+const validTopicTypes = ["temperature", 
+                         "humidity", 
+                         "light_intensity", 
+                         "soil_moisture", 
+                         "solution_pH", 
+                         "solution_EC", 
+                         "solution_TDS", 
+                         "images"];
 
 // DB variables
 const db_name = `pgmsdb`;
@@ -27,7 +34,9 @@ const db_name = `pgmsdb`;
 const experiment = `cherrytomato`;
 const address = `dlsu`;
 const node = `sensornode`;
-const location = address + '_' + experiment + '_' + node;
+//const location = address + '_' + experiment + '_' + node;
+const location = "test_data_1";
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
@@ -87,8 +96,6 @@ aedes.on('publish', async function(packet, client) {
                 helper.logMessage(errorMsg);
                 db.insertTable(errorLog, "error_msg");
             }
-            
-            
     } else if (client && !isValidTopic) {
         errorMsg = "Invalid topic.";
         errorLog = helper.errorLog(errorMsg);
