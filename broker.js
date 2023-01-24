@@ -33,7 +33,7 @@ const db_name = `pgmsdb`;
 // Table Name for Database
 const experiment = `cherrytomato`;
 const address = `dlsu`;
-const number = `sensornode`;
+const number = `1`;
 const location = address + '_' + experiment + '_' + number;
 // const location = "test_data_1";
 
