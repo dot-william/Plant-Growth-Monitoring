@@ -56,7 +56,7 @@ aedes.on('publish', async function(packet, client) {
         let errorMsg, errorLog;
         var raw_data;
         let parsedData;  
-        if(!packet.topic.includes("images")) {
+        if(!packet.topic.includes("camera")) {
             raw_data = JSON.parse(packet.payload.toString());
             parsedData = helper.parseData(raw_data);
             if(parsedData != null) {
@@ -75,7 +75,7 @@ aedes.on('publish', async function(packet, client) {
                 helper.logMessage(errorMsg);
                 db.insertTable(errorLog, "error_msg");
             }
-        } else if (packet.topic.includes("images")) {
+        } else if (packet.topic.includes("camera")) {
             // When image is published
             raw_data = JSON.parse(packet.payload.toString());
             try {
