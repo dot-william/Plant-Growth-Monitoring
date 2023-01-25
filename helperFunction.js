@@ -18,7 +18,7 @@ const helper = {
     */
     parseData : function (raw_data) {
         try {
-            let datetime = raw_data["datetime"]["0"];
+            let datetime = new Date (raw_data["datetime"]["0"]);
             let expt_num = parseInt(raw_data["expt_num"]["0"]);
             let sitename= raw_data["sitename"]["0"];
             let type = raw_data["type"]["0"];
