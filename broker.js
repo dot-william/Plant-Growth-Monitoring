@@ -79,8 +79,8 @@ aedes.on('publish', async function(packet, client) {
             // When image is published
             raw_data = JSON.parse(packet.payload.toString());
             try {
-                var filename = raw_data["filename"];
-                var img = Buffer.from(raw_data["value"]["0"], 'base64')
+                var filename = raw_data["filename"]["0"];
+                var img = Buffer.from(raw_data["imagedata"]["0"], 'base64')
                 var dest = '/home/student/Plant_Images/Raw/' + filename;
                 fs.writeFile(dest, img, function (err) {
                     if(err) throw err;
