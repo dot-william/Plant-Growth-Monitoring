@@ -66,6 +66,7 @@ aedes.on('publish', async function(packet, client) {
                     errorMsg = "Data does not follow correct packet format.";
                     errorLog = helper.errorLog(errorMsg);
                     helper.logMessage(errorMsg);
+                    console.log(raw_data);
                     db.insertTable(errorLog, "error_msg");
                 }
             } else {
