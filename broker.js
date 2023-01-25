@@ -25,7 +25,7 @@ const validTopicTypes = ["temperature",
                          "solution_pH", 
                          "solution_EC", 
                          "solution_TDS", 
-                         "images"];
+                         "camera"];
 
 // DB variables
 const db_name = `pgmsdb`;
