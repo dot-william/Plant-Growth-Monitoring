@@ -31,11 +31,11 @@ const validTopicTypes = ["temperature",
 const db_name = `pgmsdb`;
 
 // Table Name for Database
-const experiment = `cherrytomato`;
-const address = `dlsu`;
-const number = `1`;
-const location = address + '_' + experiment + '_' + number;
-//const location = "test_data_1";
+// const experiment = `cherrytomato`;
+// const address = `dlsu`;
+// const number = `1`;
+// const location = address + '_' + experiment + '_' + number;
+const location = "test_data_1";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
