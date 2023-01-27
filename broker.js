@@ -41,7 +41,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 // Initialize DB Connection
-db.connect();
+
+db.handleDisconnect();
 
 server.listen(port, function(){
     console.log('server started and listening on port ', port);

@@ -3,7 +3,7 @@ const helper  = require('../helperFunction.js');
 
 const database = {
     //Connects to the DB
-    connect : function () {
+    handleDisconnect : function () {
         // Create connection https://pimylifeup.com/raspberry-pi-mysql/
         this.db = mysql.createConnection({
             host : 'localhost',
@@ -18,6 +18,15 @@ const database = {
               throw err;
             }
             console.log("MySQL Connected...");
+        });
+
+        this.db.on('error', function (err) {
+            console.log('An error has occured', err);
+            if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+                this.db.handleDisconnect();
+            } else {
+                throw err;
+            }
         });
     },
 
