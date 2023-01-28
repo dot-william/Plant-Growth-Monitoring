@@ -24,7 +24,7 @@ const database = {
             var currentdate = new Date();
             console.log('An error has occured  @ ', currentdate,' with error:', err);
             if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-                this.handleDisconnect();
+                handleDisconnect();
             } else {
                 throw err;
             }
