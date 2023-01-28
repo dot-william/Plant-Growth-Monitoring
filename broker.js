@@ -57,12 +57,12 @@ function handleDisconnect () {
             console.log('error when connecting to db: ', err)
             setTimeout(handleDisconnect, 2000);
         }
-        console.log("MySQL Connected...");
+        var date = helper.getDatetime();
+        console.log("MySQL Connected...", date);
     });
 
     connection.on('error', function (err) {
         console.log('db error', err);
-
         if(err.code === 'PROTOCOL_CONNECTION_LOST') {
             handleDisconnect();
         } else {
