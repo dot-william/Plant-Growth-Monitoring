@@ -33,7 +33,20 @@ const database = {
 
 
     handleDisconnect: function () {
-        this.connectDb();
+        this.db = mysql.createConnection({
+            host : 'localhost',
+            user: 'blast',
+            password: 'shift12345',
+            database: 'pgmsdb'
+        });
+
+        this.db.connect(function(err){
+            if(err){
+              helper.displayError("An error has occured when trying to connect to db.");
+              throw err;
+            }
+            console.log("MySQL Connected...");
+        });
     },
     /** This function enters data to a table. If table does not exists it creates a new table
      * @param data data that was parsed from the JSON that was sent to the broker
