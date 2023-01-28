@@ -59,7 +59,7 @@ function handleDisconnect () {
         }
         var date = helper.getDatetime();
         db.connectDb(connection);
-        console.log("[" + date + "]" + "MySQL Connected...");
+        console.log("[" , date , "]" , " MySQL Connected...");
     });
 
     connection.on('error', function (err) {
