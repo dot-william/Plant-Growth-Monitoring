@@ -12,10 +12,10 @@ const database = {
             database: 'pgmsdb'
         });
 
-        this.db.connect(function(err){
+        this.db.connect((err) => {
             if(err){
               console.log("An error has occured when trying to connect to db.");
-              setTimeout(handleDisconnect, 2000);
+              setTimeout(this.handleDisconnect, 2000);
             }
             var date = helper.getDatetime();
             console.log("MySQL Connected...");
