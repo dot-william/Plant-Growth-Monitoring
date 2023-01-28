@@ -4,7 +4,7 @@ const helper  = require('../helperFunction.js');
 const database = {
     //Connects to the DB
     handleDisconnect : function () {
-        // Create connection https://pimylifeup.com/raspberry-pi-mysql/
+        // Create connection 
         this.db = mysql.createConnection({
             host : 'localhost',
             user: 'blast',
@@ -24,7 +24,7 @@ const database = {
             var currentdate = new Date();
             console.log('An error has occured  @ ', currentdate,' with error:', err);
             if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-                this.db.handleDisconnect();
+                this.handleDisconnect();
             } else {
                 throw err;
             }
