@@ -31,11 +31,11 @@ const validTopicTypes = ["temperature",
 const db_name = `pgmsdb`;
 
 // Table Name for Database
-// const experiment = `cherrytomato`;
-// const address = `dlsu`;
-// const number = `1`;
-// const location = address + '_' + experiment + '_' + number;
-const location = "test_data_1";
+const experiment = `cherrytomato`;
+const address = `dlsu`;
+const number = `0`;
+const location = address + '_' + experiment + '_' + number;
+// const location = "test_data_1";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -54,7 +54,7 @@ function handleDisconnect () {
 
     connection.connect(function(err) {
         if(err) {
-            console.log('error when connecting to db: ', err)
+            console.log('Error when connecting to db: ', err)
             setTimeout(handleDisconnect, 2000);
         }
         var date = helper.getDatetime();
@@ -62,6 +62,7 @@ function handleDisconnect () {
         console.log("[" , date , "]" , " MySQL Connected...");
     });
 
+    // To address error conenction to the server is lost
     connection.on('error', function (err) {
         console.log('db error', err);
         if(err.code === 'PROTOCOL_CONNECTION_LOST') {
@@ -74,11 +75,9 @@ function handleDisconnect () {
 
 handleDisconnect();
 
-
 server.listen(port, function(){
     console.log('server started and listening on port ', port);
 });
-
 
 
 // Broker
