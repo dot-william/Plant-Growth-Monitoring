@@ -10,11 +10,11 @@ const helper  = require('./helperFunction');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const fs = require('fs');
-
+const mysql = require('mysql');
 // App set-up
 const app = express();
 var hostname = "localhost";
-var port_app = 3306;
+var port_app = 8080;
 
 //Valid topics and type to check
 const validTopics = ["sensor", "dlsu", "node-1"];
@@ -41,8 +41,36 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 // Initialize DB Connection
+var db_config = {
+    host : 'localhost',
+    user: 'blast',
+    password: 'shift12345',
+    database: 'pgmsdb'
+};
 
-db.connectDb();
+var connection; 
+function handleDisconnect () {
+    connection = mysql.createConnection(db_config);
+
+    connection.connect(function(err) {
+        if(err) {
+            console.log('error when connecting to db: ', err)
+            setTimeout(handleDisconnect, 2000);
+        }
+    });
+
+    connection.on('error', function (err) {
+        console.log('db error', err);
+
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnect();
+        } else {
+            throw err;
+        }
+    });
+} 
+
+handleDisconnect();
 
 server.listen(port, function(){
     console.log('server started and listening on port ', port);
