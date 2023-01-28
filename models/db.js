@@ -3,33 +3,37 @@ const helper  = require('../helperFunction.js');
 
 const database = {
     //Connects to the DB
-    connectDb : function () {
-        // Create connection 
-        this.db = mysql.createConnection({
-            host : 'localhost',
-            user: 'blast',
-            password: 'shift12345',
-            database: 'pgmsdb'
-        });
+    // connectDb : function () {
+    //     // Create connection 
+    //     this.db = mysql.createConnection({
+    //         host : 'localhost',
+    //         user: 'blast',
+    //         password: 'shift12345',
+    //         database: 'pgmsdb'
+    //     });
 
-        this.db.connect((err) => {
-            if(err){
-              console.log("An error has occured when trying to connect to db.");
-              setTimeout(this.handleDisconnect, 2000);
-            }
-            var date = helper.getDatetime();
-            console.log("MySQL Connected...");
-        });
+    //     this.db.connect((err) => {
+    //         if(err){
+    //           console.log("An error has occured when trying to connect to db.");
+    //           setTimeout(this.handleDisconnect, 2000);
+    //         }
+    //         var date = helper.getDatetime();
+    //         console.log("[" = date + "]" + "MySQL Connected...");
+    //     });
 
-        this.db.on('error', (err) => {
-            var currentdate = new Date();
-            console.log('An error has occured  @ ', currentdate,' with error:', err);
-            if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-                this.connectDb();
-            } else {
-                throw err;
-            }
-        });
+    //     this.db.on('error', (err) => {
+    //         var currentdate = new Date();
+    //         console.log('An error has occured  @ ', currentdate,' with error:', err);
+    //         if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+    //             this.connectDb();
+    //         } else {
+    //             throw err;
+    //         }
+    //     });
+    // },
+
+    connectDb : function (database) {
+        this.db = database;
     },
 
     /** This function enters data to a table. If table does not exists it creates a new table

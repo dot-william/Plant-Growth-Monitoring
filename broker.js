@@ -41,38 +41,39 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 // Initialize DB Connection
-// var db_config = {
-//     host : 'localhost',
-//     user: 'blast',
-//     password: 'shift12345',
-//     database: 'pgmsdb'
-// };
+var db_config = {
+    host : 'localhost',
+    user: 'blast',
+    password: 'shift12345',
+    database: 'pgmsdb'
+};
 
-// var connection; 
-// function handleDisconnect () {
-//     connection = mysql.createConnection(db_config);
+var connection; 
+function handleDisconnect () {
+    connection = mysql.createConnection(db_config);
 
-//     connection.connect(function(err) {
-//         if(err) {
-//             console.log('error when connecting to db: ', err)
-//             setTimeout(handleDisconnect, 2000);
-//         }
-//         var date = helper.getDatetime();
-//         console.log("MySQL Connected...", date);
-//     });
+    connection.connect(function(err) {
+        if(err) {
+            console.log('error when connecting to db: ', err)
+            setTimeout(handleDisconnect, 2000);
+        }
+        var date = helper.getDatetime();
+        db.connectDb(connection);
+        console.log("MySQL Connected...", date);
+    });
 
-//     connection.on('error', function (err) {
-//         console.log('db error', err);
-//         if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-//             handleDisconnect();
-//         } else {
-//             throw err;
-//         }
-//     });
-// } 
+    connection.on('error', function (err) {
+        console.log('db error', err);
+        if(err.code === 'PROTOCOL_CONNECTION_LOST') {
+            handleDisconnect();
+        } else {
+            throw err;
+        }
+    });
+} 
 
-// handleDisconnect();
-db.connectDb();
+handleDisconnect();
+
 
 server.listen(port, function(){
     console.log('server started and listening on port ', port);
