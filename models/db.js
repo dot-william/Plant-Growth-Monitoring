@@ -20,7 +20,7 @@ const database = {
             console.log("MySQL Connected...");
         });
 
-        this.db.on('error', function (err) {
+        this.db.on('error', (err) => {
             var currentdate = new Date();
             console.log('An error has occured  @ ', currentdate,' with error:', err);
             if(err.code === 'PROTOCOL_CONNECTION_LOST') {
@@ -33,20 +33,7 @@ const database = {
 
 
     handleDisconnect: function () {
-        this.db = mysql.createConnection({
-            host : 'localhost',
-            user: 'blast',
-            password: 'shift12345',
-            database: 'pgmsdb'
-        });
-
-        this.db.connect(function(err){
-            if(err){
-              helper.displayError("An error has occured when trying to connect to db.");
-              throw err;
-            }
-            console.log("MySQL Connected...");
-        });
+        this.connectDb();
     },
     /** This function enters data to a table. If table does not exists it creates a new table
      * @param data data that was parsed from the JSON that was sent to the broker
