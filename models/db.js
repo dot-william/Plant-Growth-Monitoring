@@ -31,10 +31,10 @@ const database = {
         });
     },
 
-    
+
     handleDisconnect: function () {
         this.connectDb();
-    }
+    },
     /** This function enters data to a table. If table does not exists it creates a new table
      * @param data data that was parsed from the JSON that was sent to the broker
      * @param db_name name of the database where data will be stored
