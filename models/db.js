@@ -25,17 +25,13 @@ const database = {
             var currentdate = new Date();
             console.log('An error has occured  @ ', currentdate,' with error:', err);
             if(err.code === 'PROTOCOL_CONNECTION_LOST') {
-                this.handleDisconnect();
+                this.connectDb();
             } else {
                 throw err;
             }
         });
     },
 
-
-    handleDisconnect: function () {
-        this.connectDb();
-    },
     /** This function enters data to a table. If table does not exists it creates a new table
      * @param data data that was parsed from the JSON that was sent to the broker
      * @param db_name name of the database where data will be stored
