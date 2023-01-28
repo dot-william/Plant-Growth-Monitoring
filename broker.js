@@ -14,7 +14,7 @@ const fs = require('fs');
 // App set-up
 const app = express();
 var hostname = "localhost";
-var port_app = 8080;
+var port_app = 3306;
 
 //Valid topics and type to check
 const validTopics = ["sensor", "dlsu", "node-1"];
