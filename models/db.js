@@ -15,8 +15,9 @@ const database = {
         this.db.connect(function(err){
             if(err){
               console.log("An error has occured when trying to connect to db.");
-              throw err;
+              setTimeout(handleDisconnect, 2000);
             }
+            var date = helper.getDatetime();
             console.log("MySQL Connected...");
         });
 
