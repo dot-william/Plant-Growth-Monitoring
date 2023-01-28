@@ -14,7 +14,7 @@ const database = {
 
         this.db.connect(function(err){
             if(err){
-              helper.displayError("An error has occured when trying to connect to db.");
+              console.log("An error has occured when trying to connect to db.");
               throw err;
             }
             console.log("MySQL Connected...");
