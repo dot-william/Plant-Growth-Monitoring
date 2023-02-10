@@ -23,9 +23,15 @@ import pymysql.cursors
 def getValues(table_name, sensor_idx, type):
 
     query = "SELECT * from %s WHERE (sensor_idx = %s AND type = %s  ORDER BY id ASC"
-    with pymysql.connect(host='localhost', user='blast', password='shift12345', database='pgmsdb') as conn:
-        c = conn.cursor()
-        sqlArray = c.execute(query, ("test_data_table", "8", "temperature"))
+    connection = pymysql.connect(host='localhost', 
+                                 user='blast', 
+                                 password='shift12345', 
+                                 database='pgmsdb')
+
+    sqlArray = []
+    with connection:
+        with connection.cursor() as cursor:
+            sqlArray = cursor.execute(query, ("test_data_table", "8", "temperature"))
   
     return sqlArray
 # 2. Function gets the latest sensor data, and displays it
