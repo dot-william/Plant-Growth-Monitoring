@@ -22,10 +22,10 @@ import pymysql.cursors
 # 1. Function that would get values of a type of data (e.g. temp, soil moisture) and indicated a sensor_idx and displays to terminal the number of rows gotten
 def getValues(table_name, sensor_idx, type):
 
-    query = f"SELECT * from {table_name} WHERE (sensor_idx = '{sensor_idx}' AND type = '{type}' ORDER BY id ASC"
+    query = "SELECT * from %s WHERE (sensor_idx = %s AND type = %s  ORDER BY id ASC"
     with pymysql.connect(host='localhost', user='blast', password='shift12345', database='pgmsdb') as conn:
         c = conn.cursor()
-        sqlArray = c.execute(query)
+        sqlArray = c.execute(query, (table_name, sensor_idx, type))
   
     return sqlArray
 # 2. Function gets the latest sensor data, and displays it
