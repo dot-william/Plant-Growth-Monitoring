@@ -103,7 +103,7 @@ const database = {
                 console.log(msg);
                 throw err; 
             }
-            helper.logMessage(`Data (${data['type']}${data['sensor_idx']}: ${data['value']}) successfully inserted to ${location} table.`)
+            helper.logMessage(`Data (${data['type']}-${data['sensor_idx']}: ${data['value']}) successfully inserted to ${location} table.`)
             
         });
     },
