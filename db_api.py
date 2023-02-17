@@ -3,24 +3,11 @@ import mysql.connector
 import pandas as pd
 # https://stackoverflow.com/questions/28981770/store-sql-result-in-a-variable-in-python
 
-# def createMYSQLConnection():
-#     try:
-#         connection = mysql.connector.connect(
-#             host = 'localhost',
-#             user='blast', 
-#             password='shift12345', 
-#             database='pgmsdb')
-
-#         cursor = connection.cursor()
-#         return cursor
-#     except mysql.connectorError as e:
-#         print("Error reading data from MYSQL table", e)
-#         return NULL
 # Todo: 
 # Create
 
-# 0. Function that creates connection to the server and returns the cursor (which is used to execute statements)
 def create_mysql_connection():
+    """Creates a MySQL Connection and returns the cursor"""
     connection = mysql.connector.connect(host='localhost', 
                                 user='blast', 
                                 password='shift12345', 
@@ -30,6 +17,7 @@ def create_mysql_connection():
     return cursor
 
 def create_pymysql_connection():
+    """Creates a PyMySQL Connection"""
     connection = pymysql.connect(host='localhost', 
                                  user='blast', 
                                  password='shift12345', 
@@ -39,6 +27,7 @@ def create_pymysql_connection():
 
 #0.1 Closes connection
 def close_connection(cursor, connection):
+    """Closes a MySQL Connection"""
     try:
         cursor.close()
         connection.close()
@@ -46,21 +35,48 @@ def close_connection(cursor, connection):
     except err:
         print("Unsuccessful closing of cursor and connection with error:", err)
     
-# 1. Function that would get values of a type of data (e.g. temp, soil moisture) and indicated a sensor_idx and displays to terminal the number of rows gotten
 def get_values(table_name, sensor_idx, sensor_type):
     """
-    This function retrieves all values of a certain type of data (e.g. temperature, soil moisture) based on an indicated sensor type
+    Retrieves all rows from a certain table pertaining to the given sensor index and sensor type 
+    
+    Args:
+        table_name (string): name of the table to get values from
+        sensor_idx (string): index of sensor
+        sensor_type (string): type of sensor (e.g. temperature, soil moisture)
+    Returns:
+        Pandas df containing the results of the query given the parameters
     """
-    connection = create_pymysql_connection()
-    query = "select * from " + table_name + " where sensor_idx = %s AND type = %s"
-    df = pd.read_sql_query(query, connection, params=[sensor_idx, sensor_type])
-    return df
+    df = []
+    try:
+        connection = create_pymysql_connection()
+        query = "select * from " + table_name + " where sensor_idx = %s AND type = %s"
+        df = pd.read_sql_query(query, connection, params=[sensor_idx, sensor_type])
+    except Exception as err:
+        print("Error occured:", err)
+    finally:
+        return df
 
 def get_all_values(table_name):
-    connection = create_pymysql_connection()
-    query = "select * from " + table_name
-    df = pd.read_sql_query(query, connection)
-    return df
+    """
+    Retrieves all rows from a certain table 
+    
+    Args:
+        table_name (string): name of the table to get values from
+    Returns:
+        Pandas df containing the results of the query 
+    """
+    df = []
+    try:
+        connection = create_pymysql_connection()
+        query = "select * from " + table_name
+        df = pd.read_sql_query(query, connection)
+    except Exception as err:
+        print("Error occured:", err)
+    finally:
+        return df
+
+        
+    
 
 
     
@@ -108,6 +124,11 @@ def insert_data_db(data):
 
 df = get_values("dlsu_cherrytomato_0", "0", "temperature")
 df2 = get_all_values("dlsu_cherrytomato_0")
-print(df2['type'].value_counts())
+
+if len(df) != 0:
+    print(df.head())
+else:
+    print("empty")
+
 
 
