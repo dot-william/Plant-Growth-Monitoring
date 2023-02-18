@@ -35,11 +35,12 @@ def close_connection(cursor, connection):
     except err:
         print("Unsuccessful closing of cursor and connection with error:", err)
     
-def get_values(table_name, sensor_idx, sensor_type):
+def get_values(connection, table_name, sensor_idx, sensor_type):
     """
     Retrieves all rows from a certain table pertaining to the given sensor index and sensor type 
     
     Args:
+        connection (object): PyMySql connection
         table_name (string): name of the table to get values from
         sensor_idx (string): index of sensor
         sensor_type (string): type of sensor (e.g. temperature, soil moisture)
@@ -48,7 +49,6 @@ def get_values(table_name, sensor_idx, sensor_type):
     """
     df = []
     try:
-        connection = create_pymysql_connection()
         query = "select * from " + table_name + " where sensor_idx = %s AND type = %s"
         df = pd.read_sql_query(query, connection, params=[sensor_idx, sensor_type])
     except Exception as err:
@@ -121,8 +121,9 @@ def insert_data_db(data):
 #     cursor.execute(query)
 #     connection.commit()
 
-
-df = get_values("dlsu_cherrytomato_0", "0", "temperature")
+connection = create_pymysql_connection()
+print(type(connection))
+df = get_values(connection, "dlsu_cherrytomato_0", "0", "temperature")
 df2 = get_all_values("dlsu_cherrytomato_0")
 
 if len(df) != 0:
