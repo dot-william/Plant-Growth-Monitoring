@@ -91,11 +91,11 @@ def insert_data_table(mysql_connection, mysql_cursor, table_name, array_data):
     query = ("INSERT INTO " + table_name + " (datetime, expt_num, sitename, type, sensor_idx, value) VALUES (%s, %s, %s, %s, %s, %s)")
     for data in array_data:
         date = data["datetime"]
-        expt_num = data["expt_num"]
+        expt_num = int(data["expt_num"])
         site_name = data["sitename"]
         type_value = data["type"]
-        sensor_idx = data["index"]
-        value = data["value"]
+        sensor_idx = int(data["index"])
+        value = float(data["value"])
         try:
             mysql_cursor.execute(query, (date, expt_num, site_name, type_value, sensor_idx, value))
             mysql_connection.commit() 
@@ -117,24 +117,24 @@ else:
 # Test sample
 sample_array_dict =[{
                     'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
-                    'expt_num': 0,
-                    'sitename': "DLSU_BLAST",
+                    'expt_num': "0",
+                    'sitename': "test1",
                     'index': 0, 
                     'value': 1,
                     'type':  "pred_ph"
                     },
                     {
                     'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
-                    'expt_num': 0,
-                    'sitename': "DLSU_BLAST",
+                    'expt_num': "0",
+                    'sitename': "test2",
                     'index': 0, 
                     'value': 2.5,
                     'type':  "pred_moisture"
                     },
                     {
                     'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
-                    'expt_num': 0,
-                    'sitename': "DLSU_BLAST",
+                    'expt_num': "0",
+                    'sitename': "test3",
                     'index': 0, 
                     'value': 3.1,
                     'type':  "pred_moisture"
@@ -142,7 +142,7 @@ sample_array_dict =[{
                     {
                     'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
                     'expt_num': 0,
-                    'sitename': "DLSU_BLAST",
+                    'sitename': "test4",
                     'index': 1, 
                     'value': 4.5,
                     'type':  "pred_moisture"
@@ -150,7 +150,7 @@ sample_array_dict =[{
                     {
                     'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
                     'expt_num': 0,
-                    'sitename': "DLSU_BLAST",
+                    'sitename': "test5",
                     'index': 0, 
                     'value': 5.5,
                     'type':  "pred_moisture"
@@ -158,9 +158,9 @@ sample_array_dict =[{
                     {
                     'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
                     'expt_num': 0,
-                    'sitename': "DLSU_BLAST",
+                    'sitename': "test6.9",
                     'index': 0, 
-                    'value': 6.7,
+                    'value': "6.7",
                     'type':  "pred_moisture"
                     }] 
 display_latest_data(connection, "dlsu_cherrytomato_0", "0", "solution_EC")
