@@ -86,17 +86,23 @@ def display_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type)
     finally:
         return df
 
-# 4. Function that stores to the DB, adding data to the DB
-def insert_data_db(mysql_connection, mysql_cursor, table_name, data):
+# 4. Function that stores to the table in the DB
+def insert_data_table(mysql_connection, mysql_cursor, table_name, array_data):
     query = ("INSERT INTO " + table_name + " (datetime, expt_num, sitename, type, sensor_idx, value) VALUES (%s, %s, %s, %s, %s, %s)")
-    date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-    expt_num = "0"
-    site_name = "dlsu_blast"
-    sensor_type = "temperature"
-    value = data
-    sensor_idx = 0
-    mysql_cursor.execute(query, (date, expt_num, site_name, sensor_type, sensor_idx, value))
-    mysql_connection.commit()
+    for data in array_data:
+        date = data["datetime"]
+        expt_num = data["expt_num"]
+        site_name = data["sitename"]
+        type_value = data["type"]
+        sensor_idx = data["index"]
+        value = data["value"]
+        try:
+            mysql_cursor.execute(query, (date, expt_num, site_name, type_value, sensor_idx, value))
+            mysql_connection.commit() 
+        except Exception as err:
+            print("An error has occurred:", err)
+        
+
 
 connection = create_pymysql_connection()
 print(type(connection))
@@ -108,11 +114,58 @@ if len(df2) != 0:
 else:
     print("empty")
 
+# Test sample
+sample_array_dict =[{
+                    'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    'expt_num': 0,
+                    'sitename': "DLSU_BLAST",
+                    'index': 0, 
+                    'value': 1,
+                    'type':  "pred_ph"
+                    },
+                    {
+                    'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    'expt_num': 0,
+                    'sitename': "DLSU_BLAST",
+                    'index': 0, 
+                    'value': 2.5,
+                    'type':  "pred_moisture"
+                    },
+                    {
+                    'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    'expt_num': 0,
+                    'sitename': "DLSU_BLAST",
+                    'index': 0, 
+                    'value': 3.1,
+                    'type':  "pred_moisture"
+                    },
+                    {
+                    'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    'expt_num': 0,
+                    'sitename': "DLSU_BLAST",
+                    'index': 1, 
+                    'value': 4.5,
+                    'type':  "pred_moisture"
+                    },
+                    {
+                    'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    'expt_num': 0,
+                    'sitename': "DLSU_BLAST",
+                    'index': 0, 
+                    'value': 5.5,
+                    'type':  "pred_moisture"
+                    },
+                    {
+                    'datetime': datetime.datetime.now().strftime('%Y-%m-%d %H:%M'),
+                    'expt_num': 0,
+                    'sitename': "DLSU_BLAST",
+                    'index': 0, 
+                    'value': 6.7,
+                    'type':  "pred_moisture"
+                    }] 
 display_latest_data(connection, "dlsu_cherrytomato_0", "0", "solution_EC")
 db, cursor = create_mysql_connection()
-insert_data_db(db, cursor, "test_data_table", 69.9)
+insert_data_table(db, cursor, "test_data_table", sample_array_dict)
 close_mysql_connection(db, cursor)
 print("done")
 # Store data
-
-
