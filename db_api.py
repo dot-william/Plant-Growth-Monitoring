@@ -33,7 +33,7 @@ def close_mysql_connection(mysql_connection, mysql_cursor):
         mysql_cursor.close()
         mysql_connection.close()
         print("Cursor and Connection closed")
-    except err:
+    except Exception as err:
         print("Unsuccessful closing of cursor and connection with error:", err)
     
 def get_values(pymysql_connection, table_name, sensor_idx, sensor_type):
