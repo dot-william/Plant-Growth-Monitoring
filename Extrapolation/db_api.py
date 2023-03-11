@@ -75,6 +75,10 @@ def get_all_values(pymysql_connection, table_name):
     try:
         query = "SELECT * FROM " + table_name
         df = pd.read_sql_query(query, pymysql_connection)
+
+        # Preprocess before used by the model
+        df.drop(['id'], axis=1, inplace=True)
+        df = df.rename(columns={"sensor_idx":"index"})
     except Exception as err:
         print("Error occured:", err)
     finally:
