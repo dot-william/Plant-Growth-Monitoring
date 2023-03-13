@@ -24,7 +24,8 @@ const validTopicTypes = ["temperature",
                          "soil_moisture", 
                          "solution_pH", 
                          "solution_EC", 
-                         "solution_TDS", 
+                         "solution_TDS",
+                         "pred", 
                          "camera"];
 
 // DB variables
