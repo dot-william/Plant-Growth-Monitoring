@@ -96,7 +96,7 @@ def display_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type)
         return df
 
 # 4. Function that stores to the table in the DB
-def insert_data_table(mysql_connection, mysql_cursor, table_name, array_data):
+def insert_many_data_table(mysql_connection, mysql_cursor, table_name, array_data):
     query = ("INSERT INTO " + table_name + " (datetime, expt_num, sitename, type, sensor_idx, value) VALUES (%s, %s, %s, %s, %s, %s)")
     for data in array_data:
         date = data["datetime"]
@@ -111,3 +111,42 @@ def insert_data_table(mysql_connection, mysql_cursor, table_name, array_data):
         except Exception as err:
             print("An error has occurred:", err)
         
+def insert_data(table_name, data):
+    try:
+        db, cursor = create_mysql_connection()
+        query = ("INSERT INTO " + table_name + " (datetime, expt_num, sitename, type, sensor_idx, value) VALUES (%s, %s, %s, %s, %s, %s)")
+        date = data["datetime"]
+        expt_num = int(data["expt_num"])
+        site_name = data["sitename"]
+        type_value = data["type"]
+        sensor_idx = int(data["index"])
+        value = float(data["value"])
+        cursor.execute(query, (date, expt_num, site_name, type_value, sensor_idx, value))
+        db.commit() 
+        close_mysql_connection(db, cursor)
+    except Exception as err:
+        print("An error has occurred:", err)
+
+def create_pred_table():
+    try:
+        db, cursor = create_mysql_connection()
+        cursor.execute('CREATE TABLE IF NOT EXISTS `pred_table_0`(id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), type VARCHAR(25), value FLOAT, PRIMARY KEY (id)')
+        close_mysql_connection(db, cursor)
+    except Exception as err:
+        print("An error has occurred in creating table:", err)
+
+def insert_predictions_data(table_name, data):
+    try:
+        # Create table if does not exist
+        create_pred_table()
+        db, cursor = create_mysql_connection()
+        query = ("INSERT INTO " + table_name + " (datetime, expt_num, type, value) VALUES (%s, %s, %s, %s)")
+        date = data["datetime"]
+        expt_num = int(data["expt_num"])
+        type_value = data["type"]
+        value = float(data["value"])
+        cursor.execute(query, (date, expt_num, type_value, value))
+        db.commit() 
+        close_mysql_connection(db, cursor)
+    except Exception as err:
+        print("An error has occurred in inserting", err)
