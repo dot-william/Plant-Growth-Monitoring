@@ -95,11 +95,16 @@ aedes.on('publish', async function(packet, client) {
                 if(!helper.hasNan(parsedData)) {
                     db.enterData(parsedData, db_name, location);
                 } else {
-                    errorMsg = "Invalid data. Please check sensor " + raw_data["type"] +"-"+raw_data["index"];
-                    errorLog = helper.errorLog(errorMsg);
-                    helper.logMessage(errorMsg);
-                    console.log(raw_data);
-                    db.insertTable(errorLog, "error_msg");
+                    try {
+                        errorMsg = "Invalid data. Please check sensor " + raw_data["type"]["0"] +"-"+raw_data["index"]["0"];
+                        errorLog = helper.errorLog(errorMsg);
+                        helper.logMessage(errorMsg);
+                        console.log(raw_data);
+                        db.insertTable(errorLog, "error_msg");
+                    } catch (error) {
+                        console.log("An error has occured: " + error);
+                    }
+                    
                 }
             } else {
                 errorMsg = "Packet format incorrect.";
