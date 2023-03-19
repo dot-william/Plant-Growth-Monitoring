@@ -95,7 +95,7 @@ aedes.on('publish', async function(packet, client) {
                 if(!helper.hasNan(parsedData)) {
                     db.enterData(parsedData, db_name, location);
                 } else {
-                    errorMsg = "Data does not follow correct packet format.";
+                    errorMsg = "Invalid data. Please check sensor " + raw_data["type"] +"-"+raw_data["index"];
                     errorLog = helper.errorLog(errorMsg);
                     helper.logMessage(errorMsg);
                     console.log(raw_data);
