@@ -1,12 +1,16 @@
 import sys
 import time
 import logging
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+# from watchdog.observers import Observer
+# from watchdog.events import FileSystemEventHandler
 import pandas as pd
 from datetime import datetime
 import os
-import numpy as np
+from pathlib import Path
+import os
+import shutil
+import datetime as dt
+import time
 from db_api import *
 
 def process_txt_files(filename):
@@ -44,30 +48,29 @@ def create_pred_dict(leaf_count, flower_count, fruit_count, filename_date):
 
     return d_leaf, d_flower, d_fruit
 
-def create_folders(timestamps):
-    if len(timestamps) > 0: 
-        output_processed_path = './outputs_processed/'
-        
-        # If directory does not exists
-        if not os.path.isdir(output_processed_path):
-            os.mkdir(output_processed_path)
-            print("Created directory successfully")
-        
-        for timestamp in timestamps:
-            os.mkdir(f'{output_processed_path}{timestamp}')
-            print(f"Created {output_processed_path}{timestamp}")
+def create_folders():
+    today = dt.datetime.today()
+    present_date = Path(today.strftime("%Y_%m_%d"))
 
-# def move_file():
-#     for i (orig_file, filename, folder) in enumerate(zip(data[]))
+    output_processed_path = Path("Outputs_Processed")
+    
+    # If directory does not exists
+    if not os.path.isdir(output_processed_path):
+        os.mkdir(output_processed_path)
+        print("Created directory successfully")
+    
+    os.makedirs(output_processed_path / present_date, exist_ok=True) # Make forlder if doesn't exist
+    return output_processed_path, present_date 
 
-def countOutput():
-    path = ".\Outputs"
+def countOutput(output_processed_path, present_date_path):
+    # path = ".\Outputs"
+    path = Path("Outputs")
     dirlist = os.listdir(path)
+    results = []
     if  dirlist == []:
         print("No files found in directory")
     else:
         # To append result to array dictionaries
-        results = []
         try:
             for root, directories, filenames in os.walk(path):
                 for filename in filenames:
@@ -78,52 +81,25 @@ def countOutput():
                         d_leaf, d_flower, d_fruit = create_pred_dict(leaf_count, flower_count, fruit_count, filename)
                         
                         date_str, time_str = split_datetime(filename)
-                        d_leaf['filename'] = filename
-                        d_flower['filename'] = filename
-                        d_fruit['filename'] = filename
+                        # d_leaf['filename'] = filename
+                        # d_flower['filename'] = filename
+                        # d_fruit['filename'] = filename
 
-                        d_leaf['timestamp'] = date_str
-                        d_flower['timestamp'] = date_str
-                        d_fruit['timestamp'] = date_str
                         
-                        d_leaf['path'] = os.path.join(root, filename)
-                        d_flower['path'] = os.path.join(root, filename)
-                        d_fruit['path'] = os.path.join(root, filename)
+                        # d_leaf['path'] = os.path.join(root, filename)
+                        # d_flower['path'] = os.path.join(root, filename)
+                        # d_fruit['path'] = os.path.join(root, filename)
                         results.append(d_leaf)
                         results.append(d_flower)
                         results.append(d_fruit)
+
+                        # Move from path to dest
+                        shutil.move(path, output_processed_path / present_date_path / filename)
+                       
         except:
-            print("An error has occured when trying to coutn outputs.")
+            print("An error has occured when trying to count outputs.")
 
     return results
-
-# def create_folders(timestamp):
-
-def on_created(event):
-    print("A file was created")
-    # files, results = countOutput()
-    # # Store to db
-    # if(len(results) != 0):
-    #     # store to db
-    #     df = pd.DataFrame(results)
-    #     df2 = pd.DataFrame(files)
-    #     print(df.head())
-    #     print(df2.head())
-    #     print("length: ", len(results))
-    
-        # dont do anything and wait for the next event
-
-def on_deleted(event):
-    print("Deleted")
-
-def on_modified(event):
-    countOutput()
-    print("modified")
-    # Check all the folders in the directory
-
-
-def on_moved(event):
-    print("Moved")
 
 def split_datetime(filename):
     filename = filename.split(".") # if .txt is being read
@@ -145,11 +121,45 @@ def getDatetime(filename):
     try:
         date_str, time_str = split_datetime(filename)
         date_time = date_str + " " + time_str
-        date_object = datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S')
-    except:
-        print("An error has occured when trying to parse dates. Check filename of outputs.")
+        # print(date_str, time_str)
+        date_object = dt.datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S')
+        # print(date_object)
+    except Exception as e:
+        print("An error has occured when trying to parse dates. Check filename of outputs.", e)
     
     return date_object
+
+def perform_count_dl_output():
+    # Create necessary folders to store the output
+    output_processed_path, present_date_path = create_folders()
+    result = countOutput(output_processed_path, present_date_path)
+    # Store df to db
+    if (len(result) > 0):
+        print("Len of df:", len(result))
+        df = pd.DataFrame(result)
+        insert_predictions_data("pred_table_0", result)
+        print(df.head())
+        print("Stored to db")
+            
+    else:
+        print("Nothing was stored to the DB")
+
+# Watchdog Specific functions
+# def on_created(event):
+#     print("A file was created")
+#     # perform_count_dl_output()
+
+# def on_deleted(event):
+#     print("Deleted")
+
+# def on_modified(event):
+#     countOutput()
+#     print("modified")
+#     # Check all the folders in the directory
+
+
+# def on_moved(event):
+#     print("Moved")
 
 
 if __name__ == "__main__":
@@ -157,37 +167,32 @@ if __name__ == "__main__":
 #     logging.basicConfig(level=logging.INFO,
 #                         format='%(asctime)s - %(message)s',
 #                         datefmt='%Y-%m-%d %H:%M:%S')
-    path = "/home/student/Plant_Images"
-    # print(getDatetime("IMG_20230307_1301.txt"))
-    # Enter path to the outputs program
-    df = countOutput()    
-    # print(df["timestamp"].unique())
-    # print(df.head())
-    # create_folders(df["timestamp"].unique())
+    path = Path("Outputs")
     # Always process path file
-    # insert_predictions_data("pred_table_0", countOutput())
-
-    event_handler = FileSystemEventHandler()
+    # event_handler = FileSystemEventHandler()
     
 
 #     # event_handler.on_any_event = on_any_event
-    event_handler.on_created = on_created
-    event_handler.on_deleted = on_deleted
-    event_handler.on_modified = on_modified
-    event_handler.on_moved = on_moved
+    # event_handler.on_created = on_created
+    # event_handler.on_deleted = on_deleted
+    # event_handler.on_modified = on_modified
+    # event_handler.on_moved = on_moved
 
 
-    observer = Observer()
-    observer.schedule(event_handler, path, recursive=True)
+    # observer = Observer()
+    # observer.schedule(event_handler, path, recursive=True)
+    minute_interval = range(0,60,1)
 
-    observer.start()
+    # observer.start()
     try:
         print("Monitoring.")
         while True:
+            current_time = dt.datetime.now().time()
+            if current_time.minute in minute_interval:
+                print(f"[TIME {current_time.hour}:{current_time.minute}] Counting text file...")
+                perform_count_dl_output()
             time.sleep(1)
     except KeyboardInterrupt:
-        observer.stop()
+        # observer.stop()
         print("Exited.")
-    observer.join()
-
-getDatetime("IMG_20230307_1301.txt")
+    # observer.join()
