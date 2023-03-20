@@ -127,18 +127,35 @@ def insert_data(table_name, data):
     except Exception as err:
         print("An error has occurred:", err)
 
-def create_pred_table():
+def create_pred_table(table_name):
     try:
         db, cursor = create_mysql_connection()
-        cursor.execute('CREATE TABLE IF NOT EXISTS `pred_table_0`(id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), type VARCHAR(25), value FLOAT, PRIMARY KEY (id)')
+        cursor.execute('CREATE TABLE IF NOT EXISTS ' + table_name + ' (id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), type VARCHAR(25), value FLOAT, PRIMARY KEY (id))')
         close_mysql_connection(db, cursor)
     except Exception as err:
         print("An error has occurred in creating table:", err)
 
-def insert_predictions_data(table_name, data):
+def insert_predictions_data(table_name, raw_data):
     try:
         # Create table if does not exist
-        create_pred_table()
+        create_pred_table(table_name)
+        db, cursor = create_mysql_connection()
+        for data in raw_data:
+            query = ("INSERT INTO " + table_name + " (datetime, expt_num, type, value) VALUES (%s, %s, %s, %s)")
+            date = data["datetime"]
+            expt_num = int(data["expt_num"])
+            type_value = data["type"]
+            value = float(data["value"])
+            cursor.execute(query, (date, expt_num, type_value, value))
+            db.commit() 
+        close_mysql_connection(db, cursor)
+    except Exception as err:
+        print("An error has occurred in inserting", err)
+
+def insert_prediction_data(table_name, data):
+    try:
+        # Create table if does not exist
+        create_pred_table(table_name)
         db, cursor = create_mysql_connection()
         query = ("INSERT INTO " + table_name + " (datetime, expt_num, type, value) VALUES (%s, %s, %s, %s)")
         date = data["datetime"]
