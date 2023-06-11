@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime
 import datetime as dt
 import numpy as np
-
+import time
 from db_api import *
 
 # Functions
@@ -163,35 +163,96 @@ def store_dli():
     pass
 
 # Program is concurrently running, and it will compute DLI for day
-def compute_dli(df):
-    # Check if it is the last time of the day 
-    
-    # Get all light intensity within the day
+def compute_dli(date):
+    expt_num = 0
+    data_type = "dli"
 
-    # Convert light intensity to ppfd
+    # Initialize connection to DB
+    connection = create_engine()
+    sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
 
-    # ppfd = df.to_dict()
-    # ppfd_list.append(ppfd)
-    # Get interval
+    # Filter to only light intensities
+    intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
+    print("[BEFORE DROPPING NAN] Len of light_intensities: ", len(intensity_df))
+    intensity_df = drop_NaNs(intensity_df)
 
-    # store to sum variable
-    # 
-    pass
+    # print(sensor_df.head())
+    # Filter to only light intensities
+    intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
+    # print("[BEFORE DROPPING NAN] Len of light_intensities: ", len(intensity_df))
+    intensity_df = drop_NaNs(intensity_df)
+    # print("[AFTER DROPPING NAN] Len of light_intensities: ", len(intensity_df))
+
+    # Get unique indices
+    light_intensity_indices = intensity_df['index'].unique()
+    # print("Indices from light intensity:", light_intensity_indices)
+
+    # Initialize variables
+    datetime_temp = []
+    dli_vals = []
+    integral = 0 
+
+    # Copy df to convert to datetime
+    temp_df = intensity_df.copy()
+    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
+
+    # Get values based on date 
+    specific_date_intensities = intensity_df[temp_df['datetime'].dt.normalize() == date]
+
+    # Convert to dictionary
+    intensities = df_to_dicts(specific_date_intensities)
+
+    # Iterate data through indices
+    for index in light_intensity_indices:
+        # Get desired intensities based on index
+        desired_intensities = get_intensity_from_dict(intensities, index)
+
+        # Reinitialize variables
+        integral = 0
+        i = 0
+        datetime_temp = []
+
+        # print("INDEX BEING PROCESSED", index)
+        for i in range(len(desired_intensities)):
+            # print("Test: ",desired_intensities[i]["datetime"])
+            date_time = convert_str_datetime(desired_intensities[i]["datetime"])
+            datetime_temp.append(date_time)
+            ppfd = compute_ppfd(desired_intensities[i]["value"])
+
+            # Do not count the first element of the day
+            if i > 0:
+                # ppfds.append(ppfd)
+                seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
+                # differences.append(seconds_difference)
+                integral = integral + (ppfd * seconds_difference)
+
+        dli_val = make_dict(date, expt_num, data_type, index, integral)
+        dli_vals.append(dli_val)
+    return dli_vals
 
 # Get data from db (is pandas df)
 
 
 if __name__ == '__main__':
 
-    dli_vals = compute_all_dli()
-    df_temp = pd.DataFrame(dli_vals)
-    print(df_temp.head())
-    insert_dli("dli_table_0", dli_vals)
-    print("Insert successful")
+
+    # If 23:50 do this
+    # dli_vals = compute_all_dli()
+    # df_temp = pd.DataFrame(dli_vals)
+    # print(df_temp.head())
     # df_temp.to_csv("dli_temp.csv")
     # get_specific_li(0)
-    # try:
-    # except:
-    #     print("An unexpected error has occured")
-    #     # Email unexpected error
+    try:
+        while True:
+            now = dt.datetime.now()
+            print(now.hour, now.minute, now.second)
+            if now.hour == 23 and now.minute == 50 and now.second == 0:
+                current_date = dt.date.today()
+                date_now = current_date.strftime('%Y-%m-%d')
+                dli_vals = compute_dli(date_now)
+                insert_dli("dli_table_0", dli_vals)
+                print("Insert successful")
+                time.sleep(60)
+    except KeyboardInterrupt:
+        print("Exited.")
 
