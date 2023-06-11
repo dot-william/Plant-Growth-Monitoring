@@ -127,10 +127,35 @@ def insert_data(table_name, data):
     except Exception as err:
         print("An error has occurred:", err)
 
+def insert_dli(table_name, raw_data):
+    try:
+        create_dli_table(table_name)
+        db, cursor = create_mysql_connection()
+        for data in raw_data:
+            query = ("INSERT INTO " + table_name + " (datetime, expt_num, type, sensor_idx, value) VALUES (%s, %s, %s, %s, %s)")
+            date = data["datetime"]
+            expt_num = int(data["expt_num"])
+            type_value = data["type"]
+            sensor_idx = int(data["index"])
+            value = float(data["value"])
+            cursor.execute(query, (date, expt_num, type_value, sensor_idx, value))
+            db.commit() 
+        close_mysql_connection(db, cursor)
+    except Exception as err:
+        print("An error has occurred:", err)
+
 def create_pred_table(table_name):
     try:
         db, cursor = create_mysql_connection()
         cursor.execute('CREATE TABLE IF NOT EXISTS ' + table_name + ' (id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), type VARCHAR(25), value FLOAT, PRIMARY KEY (id))')
+        close_mysql_connection(db, cursor)
+    except Exception as err:
+        print("An error has occurred in creating table:", err)
+
+def create_dli_table(table_name):
+    try:
+        db, cursor = create_mysql_connection()
+        cursor.execute('CREATE TABLE IF NOT EXISTS ' + table_name + ' (id INT AUTO_INCREMENT, datetime DATETIME, expt_num TINYINT(1), type VARCHAR(25), sensor_idx TINYINT(1), value FLOAT, PRIMARY KEY (id))')
         close_mysql_connection(db, cursor)
     except Exception as err:
         print("An error has occurred in creating table:", err)
