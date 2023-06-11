@@ -186,7 +186,7 @@ if __name__ == '__main__':
     dli_vals = compute_all_dli()
     df_temp = pd.DataFrame(dli_vals)
     print(df_temp.head())
-    insert_dli(dli_vals)
+    insert_dli("dli_table_0", dli_vals)
     print("Insert successful")
     # df_temp.to_csv("dli_temp.csv")
     # get_specific_li(0)
