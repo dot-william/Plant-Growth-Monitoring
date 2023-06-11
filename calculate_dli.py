@@ -8,11 +8,6 @@ from db_api import *
 
 # Functions
 
-def get_interval():
-    # Convert data[n]
-    pass
-
-
 # Returns desired light intensity
 def get_intensity_from_dict(light_intensities, sensor_idx):
     desired_intensity = []
@@ -20,9 +15,6 @@ def get_intensity_from_dict(light_intensities, sensor_idx):
         if intensity["index"] == sensor_idx:
             desired_intensity.append(intensity)           
     return desired_intensity
-
-def remove_intensity_from_dict(desired_intensities, orig_intensities):
-    [i for i in test_list if i not in remove_list]
 
 def compute_time_difference(intensity, prev_intensity):
     difference = intensity - prev_intensity 
@@ -37,8 +29,6 @@ def compute_ppfd(lux):
 def df_to_dicts(df):
     dict = df.to_dict('records')
     return dict
-
-
 
 # Convert column to datetime 
 def convert_str_datetime(date_time_str):
@@ -88,7 +78,7 @@ def make_dict(date, expt_num, data_type, sensor_idx, integral):
         'datetime': date,
         'expt_num': expt_num,
         'type': data_type,
-        'sensor_idx': sensor_idx,
+        'index': sensor_idx,
         'value': dli
     }
     return dli_dict
@@ -196,6 +186,8 @@ if __name__ == '__main__':
     dli_vals = compute_all_dli()
     df_temp = pd.DataFrame(dli_vals)
     print(df_temp.head())
+    insert_dli(dli_vals)
+    print("Insert successful")
     # df_temp.to_csv("dli_temp.csv")
     # get_specific_li(0)
     # try:
