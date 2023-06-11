@@ -26,7 +26,7 @@ def remove_intensity_from_dict(desired_intensities, orig_intensities):
 
 def compute_time_difference(intensity, prev_intensity):
     difference = intensity - prev_intensity 
-    print(intensity, "-", prev_intensity , "=", difference.seconds)
+    # print(intensity, "-", prev_intensity , "=", difference.seconds)
     return difference.seconds
 
 def compute_ppfd(lux):
@@ -42,12 +42,14 @@ def df_to_dicts(df):
 
 # Convert column to datetime 
 def convert_str_datetime(date_time_str):
+    
     try:
-        converted = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+        date_time_str = str(date_time_str)
+        converted = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
     except:
-        date_obj = datetime.strptime(date_time_str, '%m/%d/%Y %H:%M')
-        date_str = datetime.strftime(date_obj, '%Y-%m-%d %H:%M:%S')
-        converted = datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        date_obj = datetime.datetime.strptime(date_time_str, '%m/%d/%Y %H:%M')
+        date_str = datetime.datetime.strftime(date_obj, '%Y-%m-%d %H:%M:%S')
+        converted = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
     
     return converted
 
@@ -92,8 +94,10 @@ def make_dict(date, expt_num, data_type, sensor_idx, integral):
     return dli_dict
 
 def get_specific_li(index):
+    connection = create_engine()
+    sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
     filename = "li" + str(index) + ".csv"
-    specific_light_intensities = sensor_df.loc[(sensor_df['type'] == 'light_intensity') & (sensor_df['sensor_idx'] == index) ]
+    specific_light_intensities = sensor_df.loc[(sensor_df['type'] == 'light_intensity') & (sensor_df['index'] == index) ]
     specific_light_intensities.to_csv(filename)
 
 
@@ -104,16 +108,16 @@ def compute_all_dli():
     # Initialize connection to DB
     connection = create_engine()
     sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
-
+    # print(sensor_df.head())
     # Filter to only light intensities
     intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
-    print("[BEFORE DROPPING NAN] Len of light_intensities: ", len(intensity_df))
+    # print("[BEFORE DROPPING NAN] Len of light_intensities: ", len(intensity_df))
     intensity_df = drop_NaNs(intensity_df)
-    print("[AFTER DROPPING NAN] Len of light_intensities: ", len(intensity_df))
+    # print("[AFTER DROPPING NAN] Len of light_intensities: ", len(intensity_df))
 
     # Get unique indices
     light_intensity_indices = intensity_df['index'].unique()
-    print("Indices from light intensity:", light_intensity_indices)
+    # print("Indices from light intensity:", light_intensity_indices)
 
     # Initialize variables
     datetime_temp = []
@@ -126,10 +130,10 @@ def compute_all_dli():
 
     # Get list of dates
     date_list = get_list_dates(intensity_df)
-    print("List of dates (len:", len(date_list), "):", date_list)
+    # print("List of dates (len:", len(date_list), "):", date_list)
 
     for date in date_list:
-        print("Date being processed:", date)
+        # print("Date being processed:", date)
         
         # Get values based on date 
         specific_date_intensities = intensity_df[temp_df['datetime'].dt.normalize() == date]
@@ -147,7 +151,9 @@ def compute_all_dli():
             i = 0
             datetime_temp = []
 
+            # print("INDEX BEING PROCESSED", index)
             for i in range(len(desired_intensities)):
+                # print("Test: ",desired_intensities[i]["datetime"])
                 date_time = convert_str_datetime(desired_intensities[i]["datetime"])
                 datetime_temp.append(date_time)
                 ppfd = compute_ppfd(desired_intensities[i]["value"])
@@ -190,7 +196,8 @@ if __name__ == '__main__':
     dli_vals = compute_all_dli()
     df_temp = pd.DataFrame(dli_vals)
     print(df_temp.head())
-    df_temp.to_csv("dli_temp.csv")
+    # df_temp.to_csv("dli_temp.csv")
+    # get_specific_li(0)
     # try:
     # except:
     #     print("An unexpected error has occured")
