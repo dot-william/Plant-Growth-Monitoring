@@ -243,9 +243,10 @@ if __name__ == '__main__':
     # df_temp.to_csv("dli_temp.csv")
     # get_specific_li(0)
     try:
+        print("Running.")
         while True:
             now = dt.datetime.now()
-            print(now.hour, now.minute, now.second)
+            # print(now.hour, now.minute, now.second)
             if now.hour == 23 and now.minute == 50 and now.second == 0:
                 current_date = dt.date.today()
                 date_now = current_date.strftime('%Y-%m-%d')
