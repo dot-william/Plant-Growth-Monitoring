@@ -1,3 +1,9 @@
+import pandas as pd
+from datetime import datetime
+import datetime as dt
+import time
+from db_api import *
+
 def make_dict(date, expt_num, data_type,  value):
     dli_dict = {
         'datetime': date,
@@ -41,9 +47,9 @@ def compute_all_median():
             prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
             median = prediction["value"].median()
             mean = prediction["value"].mean()
-            val = make_dict(date, pred_type+append_str_median, median)
+            val = make_dict(date, expt_num, pred_type+append_str_median, median)
             vals.append(val)
-            val = make_dict(date, pred_type+append_str_mean, mean)
+            val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
             vals.append(val)
     return vals
 
@@ -55,9 +61,27 @@ def insert_data():
     # Create new table for median
     # Store in test_median_counts
     pass
+def get_specific_pred(pred_type):
+    connection = create_engine()
+    preds_df = get_all_preds(connection, "pred_table_0")
+    filename = pred_type + ".csv"
+    pred_csv= preds_df.loc[(preds_df ['type'] == pred_type)]
+    pred_csv = sort_by_date(pred_csv)
+    pred_csv.to_csv(filename)
+
+def sort_by_date(preds):
+    temp = preds.copy()
+    temp["datetime"] = pd.to_datetime(temp["datetime"])
+    sorted_preds = temp.sort_values(by='datetime')
+    return sorted_preds
 
 connection = create_engine()
 temp_df = get_all_preds(connection, "pred_table_0")
+temp_df = sort_by_date(temp_df)
 temp_df.to_csv("pred.csv")
 vals = compute_all_median()
-vals.to_csv("val.vsc")
+vals = pd.DataFrame(vals)
+vals = sort_by_date(vals)
+vals.to_csv("val.csv")
+# print(vals.head(10))
+get_specific_pred("pred_leaf_count")
