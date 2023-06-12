@@ -234,25 +234,19 @@ def compute_dli(date):
 
 
 if __name__ == '__main__':
-
-
-    # If 23:50 do this
-    # dli_vals = compute_all_dli()
-    # df_temp = pd.DataFrame(dli_vals)
-    # print(df_temp.head())
-    # df_temp.to_csv("dli_temp.csv")
-    # get_specific_li(0)
     try:
         print("Running.")
         while True:
             now = dt.datetime.now()
-            # print(now.hour, now.minute, now.second)
+            formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+            print(f"[{formatted_datetime}]Insert successful")
             if now.hour == 23 and now.minute == 50 and now.second == 0:
                 current_date = dt.date.today()
                 date_now = current_date.strftime('%Y-%m-%d')
                 dli_vals = compute_dli(date_now)
                 insert_dli("dli_table_0", dli_vals)
-                print("Insert successful")
+                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{formatted_datetime}]Insert successful")
                 time.sleep(60)
     except KeyboardInterrupt:
         print("Exited.")
