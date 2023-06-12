@@ -84,6 +84,26 @@ def get_all_values(pymysql_connection, table_name):
     finally:
         return df
 
+def get_all_preds(pymysql_connection, table_name):
+    """
+    Retrieves all rows from a certain table 
+    
+    Args:
+        table_name (string): name of the table to get values from
+    Returns:
+        Pandas df containing the results of the query 
+    """
+    df = []
+    try:
+        query = "SELECT * FROM " + table_name
+        df = pd.read_sql_query(query, pymysql_connection)
+        df.drop(['id'], axis=1, inplace=True)
+        
+    except Exception as err:
+        print("Error occured:", err)
+    finally:
+        return df
+    
 # 2. Function gets the latest sensor data, and displays it
 def get_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type):
     try:
