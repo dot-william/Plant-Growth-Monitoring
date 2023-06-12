@@ -1,0 +1,63 @@
+def make_dict(date, expt_num, data_type,  value):
+    dli_dict = {
+        'datetime': date,
+        'expt_num': expt_num,
+        'type': data_type,
+        'value': value
+    }
+    return dli_dict
+
+def get_list_dates(df):
+    copy_df = df.copy()
+    copy_df['datetime'] = pd.to_datetime(copy_df['datetime'])
+    temp_list = copy_df["datetime"].map(pd.Timestamp.date).unique()
+    date_list = []
+    for date in temp_list:
+        date_str= date.strftime('%Y-%m-%d')
+        date_list.append(date_str)
+    
+    return date_list
+
+def compute_all_median():
+    expt_num = 0
+    append_str_median = "_median"
+    append_str_mean = "_mean"
+    
+    data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
+    connection = create_engine()
+    preds_df = get_all_preds(connection, "pred_table_0")
+    
+    count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
+    date_list = get_list_dates(count_df)
+    
+    temp_df = count_df.copy()
+    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
+    
+    vals = []
+    for date in date_list:
+        # Get values from sepecific date
+        specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
+        for pred_type in data_types:
+            prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
+            median = prediction["value"].median()
+            mean = prediction["value"].mean()
+            val = make_dict(date, pred_type+append_str_median, median)
+            vals.append(val)
+            val = make_dict(date, pred_type+append_str_mean, mean)
+            vals.append(val)
+    return vals
+
+def compute_median():
+    pass
+
+
+def insert_data():
+    # Create new table for median
+    # Store in test_median_counts
+    pass
+
+connection = create_engine()
+temp_df = get_all_preds(connection, "pred_table_0")
+temp_df.to_csv("pred.csv")
+vals = compute_all_median()
+vals.to_csv("val.vsc")
