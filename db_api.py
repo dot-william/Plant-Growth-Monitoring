@@ -85,11 +85,12 @@ def get_all_values(pymysql_connection, table_name):
         return df
 
 # 2. Function gets the latest sensor data, and displays it
-def display_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type):
+def get_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type):
     try:
         query = "SELECT * FROM " + table_name + " WHERE ID=(SELECT MAX(id) FROM " + table_name + " WHERE sensor_idx = %s AND type = %s )"
         df = pd.read_sql_query(query, pymysql_connection, params=[sensor_idx, sensor_type])
-        print(df)
+        df.drop(['id'], axis=1, inplace=True)
+        df = df.rename(columns={"sensor_idx":"index"})
     except Exception as err:
         print("Error occured:", err)
     finally:
@@ -192,3 +193,5 @@ def insert_prediction_data(table_name, data):
         close_mysql_connection(db, cursor)
     except Exception as err:
         print("An error has occurred in inserting", err)
+
+
