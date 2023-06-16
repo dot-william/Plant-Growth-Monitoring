@@ -75,13 +75,23 @@ def sort_by_date(preds):
     sorted_preds = temp.sort_values(by='datetime')
     return sorted_preds
 
+def df_to_dicts(df):
+    dict = df.to_dict('records')
+    return dict
+
+
 connection = create_engine()
 temp_df = get_all_preds(connection, "pred_table_0")
 temp_df = sort_by_date(temp_df)
 temp_df.to_csv("pred.csv")
 vals = compute_all_median()
 vals = pd.DataFrame(vals)
+
 vals = sort_by_date(vals)
+
 vals.to_csv("val.csv")
+vals_dict = df_to_dicts(vals)
+insert_predictions_data("test_median_counts", vals_dict)
+print("saved succsesfully")
 # print(vals.head(10))
 get_specific_pred("pred_leaf_count")
