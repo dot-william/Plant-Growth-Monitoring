@@ -24,6 +24,35 @@ def get_list_dates(df):
     
     return date_list
 
+# Function that computes median given date_list
+def compute_median_given_dates(date_list):
+    expt_num = 0
+    append_str_median = "_median"
+    append_str_mean = "_mean"
+    
+    data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
+    connection = create_engine()
+    preds_df = get_all_preds(connection, "pred_table_0")
+    
+    count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
+    
+    temp_df = count_df.copy()
+    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
+    
+    vals = []
+    for date in date_list:
+        # Get values from sepecific date
+        specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
+        for pred_type in data_types:
+            prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
+            median = prediction["value"].median()
+            mean = prediction["value"].mean()
+            val = make_dict(date, expt_num, pred_type+append_str_median, median)
+            vals.append(val)
+            val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
+            vals.append(val)
+    return vals
+
 def compute_all_median():
     expt_num = 0
     append_str_median = "_median"
