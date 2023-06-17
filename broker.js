@@ -32,11 +32,11 @@ const validTopicTypes = ["temperature",
 const db_name = `pgmsdb`;
 
 // Table Name for Database
-const experiment = `cherrytomato`;
-const address = `dlsu`;
-const number = `0`;
-const location = address + '_' + experiment + '_' + number;
-// const location = "test_data_table";
+// const experiment = `cherrytomato`;
+// const address = `dlsu`;
+// const number = `0`;
+// const location = address + '_' + experiment + '_' + number;
+const location = "test_data_table";
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -91,6 +91,7 @@ aedes.on('publish', async function(packet, client) {
         if(!packet.topic.includes("camera")) {
             raw_data = JSON.parse(packet.payload.toString());
             parsedData = helper.parseData(raw_data);
+            console.log(parsedData)
             if(parsedData != null) {
                 if(!helper.hasNan(parsedData)) {
                     db.enterData(parsedData, db_name, location);
