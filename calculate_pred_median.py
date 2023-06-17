@@ -116,14 +116,14 @@ def df_to_dicts(df):
 # vals = sort_by_date(vals)
 
 # vals.to_csv("val.csv")
-vals_dict = df_to_dicts(vals)
-insert_predictions_data("test_median_counts", vals_dict)
-print("saved succsesfully")
+# vals_dict = df_to_dicts(vals)
+# insert_predictions_data("test_median_counts", vals_dict)
+# print("saved succsesfully")
 # # print(vals.head(10))
 # get_specific_pred("pred_leaf_count")
 
-vals = compute_median("2023-01-25")
-print(vals)
+vals = compute_median("2023-04-22")
+print(pd.DataFrame(vals))
 # if __name__ == '__main__':
 #     try:
 #         print("Running.")
