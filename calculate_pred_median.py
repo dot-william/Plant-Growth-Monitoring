@@ -4,6 +4,7 @@ import datetime as dt
 import time
 from db_api import *
 
+# Converts DF to dictionary
 def make_dict(date, expt_num, data_type,  value):
     dli_dict = {
         'datetime': date,
@@ -13,6 +14,8 @@ def make_dict(date, expt_num, data_type,  value):
     }
     return dli_dict
 
+
+# Returns the list of dates in a dataframe
 def get_list_dates(df):
     copy_df = df.copy()
     copy_df['datetime'] = pd.to_datetime(copy_df['datetime'])
@@ -28,7 +31,7 @@ def get_list_dates(df):
 def compute_median_given_dates(date_list):
     expt_num = 0
     append_str_median = "_median"
-    append_str_mean = "_mean"
+    # append_str_mean = "_mean"
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
@@ -46,17 +49,18 @@ def compute_median_given_dates(date_list):
         for pred_type in data_types:
             prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
             median = prediction["value"].median()
-            mean = prediction["value"].mean()
+            # mean = prediction["value"].mean()
             val = make_dict(date, expt_num, pred_type+append_str_median, median)
             vals.append(val)
-            val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-            vals.append(val)
+            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
+            # vals.append(val)
     return vals
+
 
 def compute_all_median():
     expt_num = 0
     append_str_median = "_median"
-    append_str_mean = "_mean"
+    # append_str_mean = "_mean"
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
@@ -78,14 +82,15 @@ def compute_all_median():
             mean = prediction["value"].mean()
             val = make_dict(date, expt_num, pred_type+append_str_median, median)
             vals.append(val)
-            val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-            vals.append(val)
+            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
+            # vals.append(val)
     return vals
 
+# Function that computes median of predictions in a given date 
 def compute_median(date):
     expt_num = 0
     append_str_median = "_median"
-    append_str_mean = "_mean"
+    # append_str_mean = "_mean"
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
@@ -106,16 +111,12 @@ def compute_median(date):
         mean = prediction["value"].mean()
         val = make_dict(date, expt_num, pred_type+append_str_median, median)
         vals.append(val)
-        val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-        vals.append(val)
+        # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
+        # vals.append(val)
     return vals
 
 
 
-def insert_data():
-    # Create new table for median
-    # Store in test_median_counts
-    pass
 def get_specific_pred(pred_type):
     connection = create_engine()
     preds_df = get_all_preds(connection, "pred_table_0")
@@ -134,37 +135,20 @@ def df_to_dicts(df):
     dict = df.to_dict('records')
     return dict
 
-
-# connection = create_engine()
-# temp_df = get_all_preds(connection, "pred_table_0")
-# temp_df = sort_by_date(temp_df)
-# temp_df.to_csv("pred.csv")
-# vals = compute_all_median()
-# vals = pd.DataFrame(vals)
-
-# vals = sort_by_date(vals)
-
-# vals.to_csv("val.csv")
-# vals_dict = df_to_dicts(vals)
-# insert_predictions_data("test_median_counts", vals_dict)
-# print("saved succsesfully")
-# # print(vals.head(10))
-# get_specific_pred("pred_leaf_count")
-
 vals = compute_median("2023-04-22")
 print(pd.DataFrame(vals))
-# if __name__ == '__main__':
-#     try:
-#         print("Running.")
-#         while True:
-#             now = dt.datetime.now()
-#             if now.hour == 23 and now.minute == 50 and now.second == 0:
-#                 current_date = dt.date.today()
-#                 date_now = current_date.strftime('%Y-%m-%d')
-#                 dli_vals = compute_median(date_now)
-#                 insert_dli("dli_table_0", dli_vals)
-#                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-#                 print(f"[{formatted_datetime}] Insert successful")
-#                 time.sleep(60)
-#     except KeyboardInterrupt:
-#         print("Exited.")
+if __name__ == '__main__':
+    try:
+        print("Running prediction median calculator program...")
+        while True:
+            now = dt.datetime.now()
+            if now.hour == 23 and now.minute == 50:
+                current_date = dt.date.today()
+                date_now = current_date.strftime('%Y-%m-%d')
+                dli_vals = compute_median(date_now)
+                insert_dli("dli_table_0", dli_vals)
+                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{formatted_datetime}] Insert successful")     
+            time.sleep(60) 
+    except KeyboardInterrupt:
+        print("Exited.")
