@@ -31,8 +31,10 @@ def get_list_dates(df):
 def find_missing_dates(existing_dates, all_dates):
     # Add date today
     missing_dates = []
+    current_date = dt.date.today()
+    date_now = current_date.strftime('%Y-%m-%d')
     for date in all_dates:
-        if date not in existing_dates:
+        if date not in existing_dates and date != date_now:
             missing_dates.append(date)
 
     
@@ -56,7 +58,9 @@ def compute_median():
     median_date_list = get_list_dates(medians_df)
     date_list =  find_missing_dates(median_date_list, count_date_list)
 
-    print(date_list)
+    print(f"all dates ({len(count_date_list)}):", count_date_list)
+    print(f"median ({len(median_date_list)}):", median_date_list)
+    print(f"result({len(date_list)}):", date_list)
     # temp_df = count_df.copy()
     # temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
     
