@@ -27,6 +27,7 @@ def get_list_dates(df):
     
     return date_list
 
+# This function finds the missing dates from a certain list of dates
 def find_missing_dates(existing_dates, all_dates):
     missing_dates = []
     for date in all_dates:
