@@ -4,6 +4,7 @@ from datetime import datetime
 import datetime as dt
 import time
 from db_api import *
+from config import Config
 
 # Returns desired light intensity
 def get_intensity_from_dict(light_intensities, sensor_idx):
@@ -73,19 +74,28 @@ def make_dict(date, expt_num, data_type, sensor_idx, integral):
 # Returns specific light intensity
 def get_specific_li(index):
     connection = create_engine()
-    sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
+    sensor_df = get_all_values(connection, Config.sensors_table)
     filename = "li" + str(index) + ".csv"
     specific_light_intensities = sensor_df.loc[(sensor_df['type'] == 'light_intensity') & (sensor_df['index'] == index) ]
     specific_light_intensities.to_csv(filename)
 
+# This function finds the missing dates from a certain list of dates
+def find_missing_dates(existing_dates, all_dates):
+    missing_dates = []
+    for date in all_dates:
+        if date not in existing_dates:
+            missing_dates.append(date)
+    return missing_dates
+
 # Function that computes all DLI of the whole DB
-def compute_all_dli():
+def compute_dli():
     expt_num = 0
     data_type = "dli"
 
     # Initialize connection to DB
     connection = create_engine()
-    sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
+    sensor_df = get_all_values(connection, Config.sensors_table)
+    dli_df =  get_all_values(connection, Config.dli_table)
 
     # Filter to only light intensities
     intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
@@ -107,43 +117,50 @@ def compute_all_dli():
     temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
 
     # Get list of dates
-    date_list = get_list_dates(intensity_df)
+    intensity_dates = get_list_dates(intensity_df)
+    dli_dates = get_list_dates(dli_df) 
 
-    for date in date_list:
+    date_list = find_missing_dates(dli_dates, intensity_dates)
 
-        # Get values based on date 
-        specific_date_intensities = intensity_df[temp_df['datetime'].dt.normalize() == date]
+    print(date_list)
+    if len(date_list) == 0:
+        print("List is empty")
+    
+    # for date in date_list:
+
+    #     # Get values based on date 
+    #     specific_date_intensities = intensity_df[temp_df['datetime'].dt.normalize() == date]
         
-        # Convert to dictionary
-        intensities = df_to_dicts(specific_date_intensities)
+    #     # Convert to dictionary
+    #     intensities = df_to_dicts(specific_date_intensities)
 
-        # Iterate data through indices
-        for index in light_intensity_indices:
-            # Get desired intensities based on index
-            desired_intensities = get_intensity_from_dict(intensities, index)
+    #     # Iterate data through indices
+    #     for index in light_intensity_indices:
+    #         # Get desired intensities based on index
+    #         desired_intensities = get_intensity_from_dict(intensities, index)
 
-            # Reinitialize variables
-            integral = 0
-            i = 0
-            datetime_temp = []
+    #         # Reinitialize variables
+    #         integral = 0
+    #         i = 0
+    #         datetime_temp = []
 
-            for i in range(len(desired_intensities)):
-                date_time = convert_str_datetime(desired_intensities[i]["datetime"])
-                datetime_temp.append(date_time)
-                ppfd = compute_ppfd(desired_intensities[i]["value"])
+    #         for i in range(len(desired_intensities)):
+    #             date_time = convert_str_datetime(desired_intensities[i]["datetime"])
+    #             datetime_temp.append(date_time)
+    #             ppfd = compute_ppfd(desired_intensities[i]["value"])
                 
-                # Do not count the first element of the day
-                if i > 0:
-                    seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
-                    integral = integral + (ppfd * seconds_difference)
+    #             # Do not count the first element of the day
+    #             if i > 0:
+    #                 seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
+    #                 integral = integral + (ppfd * seconds_difference)
         
-            dli_val = make_dict(date, expt_num, data_type, index, integral)
-            dli_vals.append(dli_val)
-    return dli_vals
+    #         dli_val = make_dict(date, expt_num, data_type, index, integral)
+    #         dli_vals.append(dli_val)
+    # return dli_vals
 
 
 # Computes DLI on a given date
-def compute_dli(date):
+def compute_dli_today(date):
     expt_num = 0
     data_type = "dli"
 
@@ -203,21 +220,23 @@ def compute_dli(date):
     return dli_vals
 
 
+# Compute DLI to see what are the missing DLI incase program isn't ran for days
+compute_dli()
 
 # Main function
-if __name__ == '__main__':
-    try:
-        print("Running DLI calculator program...")
-        while True:
-            now = dt.datetime.now()
-            if now.hour == 23 and now.minute == 50:
-                current_date = dt.date.today()
-                date_now = current_date.strftime('%Y-%m-%d')
-                dli_vals = compute_dli(date_now)
-                insert_dli("dli_table_0", dli_vals)
-                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-                print(f"[{formatted_datetime}] Insert successful")
-            time.sleep(60) 
-    except KeyboardInterrupt:
-        print("Exited.")
+# if __name__ == '__main__':
+#     try:
+#         print("Running DLI calculator program...")
+#         while True:
+#             now = dt.datetime.now()
+#             if now.hour == 23 and now.minute == 50:
+#                 current_date = dt.date.today()
+#                 date_now = current_date.strftime('%Y-%m-%d')
+#                 dli_vals = compute_dli_today(date_now)
+#                 insert_dli("dli_table_0", dli_vals)
+#                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+#                 print(f"[{formatted_datetime}] Insert successful")
+#             time.sleep(60) 
+#     except KeyboardInterrupt:
+#         print("Exited.")
 

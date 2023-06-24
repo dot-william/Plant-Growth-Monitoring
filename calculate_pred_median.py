@@ -3,6 +3,7 @@ from datetime import datetime
 import datetime as dt
 import time
 from db_api import *
+from config import Config
 
 # Converts DF to dictionary
 def make_dict(date, expt_num, data_type,  value):
@@ -13,7 +14,6 @@ def make_dict(date, expt_num, data_type,  value):
         'value': value
     }
     return dli_dict
-
 
 # Returns the list of dates in a dataframe
 def get_list_dates(df):
@@ -27,67 +27,48 @@ def get_list_dates(df):
     
     return date_list
 
-# Function that computes median given date_list
-def compute_median_given_dates(date_list):
-    expt_num = 0
+def find_missing_dates(existing_dates, all_dates):
+    missing_dates = []
+    for date in all_dates:
+        if date not in existing_dates:
+            missing_dates.append(date)
+    return missing_dates
+
+# Function that computes median prediction of the day
+def compute_median():
+    expt_num = int(Config.experiment_num)
     append_str_median = "_median"
-    # append_str_mean = "_mean"
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
-    preds_df = get_all_preds(connection, "pred_table_0")
-    
+
+    preds_df = get_all_preds(connection, Config.predictions_table)
+    medians_df = get_all_preds(connection, Config.pred_median_table)
+
+    # 
     count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
     
-    temp_df = count_df.copy()
-    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
-    
-    vals = []
-    for date in date_list:
-        # Get values from sepecific date
-        specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
-        for pred_type in data_types:
-            prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
-            median = prediction["value"].median()
-            # mean = prediction["value"].mean()
-            val = make_dict(date, expt_num, pred_type+append_str_median, median)
-            vals.append(val)
-            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-            # vals.append(val)
-    return vals
+    count_date_list = get_list_dates(count_df)
+    median_date_list = get_list_dates(medians_df)
+    date_list =  find_missing_dates(median_date_list, count_date_list)
 
+    print(date_list)
+    # temp_df = count_df.copy()
+    # temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
+    
+    # vals = []
+    # for date in date_list:
+    #     # Get values from sepecific date
+    #     specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
+    #     for pred_type in data_types:
+    #         prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
+    #         median = prediction["value"].median()
+    #         mean = prediction["value"].mean()
+    #         val = make_dict(date, expt_num, pred_type+append_str_median, median)
+    #         vals.append(val)
+    # return vals
 
-def compute_all_median():
-    expt_num = 0
-    append_str_median = "_median"
-    # append_str_mean = "_mean"
-    
-    data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
-    connection = create_engine()
-    preds_df = get_all_preds(connection, "pred_table_0")
-    
-    count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
-    date_list = get_list_dates(count_df)
-    
-    temp_df = count_df.copy()
-    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
-    
-    vals = []
-    for date in date_list:
-        # Get values from sepecific date
-        specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
-        for pred_type in data_types:
-            prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
-            median = prediction["value"].median()
-            mean = prediction["value"].mean()
-            val = make_dict(date, expt_num, pred_type+append_str_median, median)
-            vals.append(val)
-            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-            # vals.append(val)
-    return vals
-
-# Function that computes median of predictions in a given date 
-def compute_median(date):
+def compute_median_today(date):
     expt_num = 0
     append_str_median = "_median"
     # append_str_mean = "_mean"
@@ -115,11 +96,9 @@ def compute_median(date):
         # vals.append(val)
     return vals
 
-
-
 def get_specific_pred(pred_type):
     connection = create_engine()
-    preds_df = get_all_preds(connection, "pred_table_0")
+    preds_df = get_all_preds(connection, Config.predictions_table)
     filename = pred_type + ".csv"
     pred_csv= preds_df.loc[(preds_df ['type'] == pred_type)]
     pred_csv = sort_by_date(pred_csv)
@@ -135,8 +114,11 @@ def df_to_dicts(df):
     dict = df.to_dict('records')
     return dict
 
-vals = compute_median("2023-04-22")
-print(pd.DataFrame(vals))
+
+# Performs operation for missing dates
+compute_median()
+# vals = compute_median("2023-04-22")
+# print(pd.DataFrame(vals))
 if __name__ == '__main__':
     try:
         print("Running prediction median calculator program...")
@@ -145,7 +127,7 @@ if __name__ == '__main__':
             if now.hour == 23 and now.minute == 50:
                 current_date = dt.date.today()
                 date_now = current_date.strftime('%Y-%m-%d')
-                dli_vals = compute_median(date_now)
+                dli_vals = compute_median_today(date_now)
                 insert_dli("dli_table_0", dli_vals)
                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
                 print(f"[{formatted_datetime}] Insert successful")     
