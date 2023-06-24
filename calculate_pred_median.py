@@ -160,7 +160,7 @@ def compute_all_median():
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
 create_pred_table(Config.pred_median_table)
 vals = compute_median()
-insert_prediction_data(Config.pred_median_table, vals)
+insert_predictions_data(Config.pred_median_table, vals)
 new_df = pd.DataFrame(vals)
 # new_df.to_csv("new_compute_all_median_results.csv")
 
