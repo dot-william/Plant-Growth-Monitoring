@@ -123,11 +123,6 @@ def compute_dli():
     dli_dates = get_list_dates(dli_df) 
 
     date_list = find_missing_dates(dli_dates, intensity_dates)
-    
-
-    print(f"all dates ({len(intensity_dates)}):", intensity_dates)
-    print(f"median ({len(dli_dates)}):", dli_dates)
-    print(f"result({len(date_list)}):", date_list)
 
     for date in date_list:
 
@@ -290,20 +285,12 @@ create_dli_table(Config.dli_table)
 vals = compute_dli()
 insert_dli(Config.dli_table, vals)
 new_df = pd.DataFrame(vals)
-# new_df.to_csv("new_compute_all_dli_results.csv")
 
 if len(vals) == 0:
     print("DLI calculations are already up to date.")
 else:
     print("Database has been updated with latest DLI.")
 
-
-# Delete, use for testing when dropped 
-all_dict = compute_all_dli()
-
-all_df = pd.DataFrame(all_dict)
-
-all_df.to_csv("compute_all_dli_results.csv")
 
 # Main function
 if __name__ == '__main__':
@@ -316,7 +303,6 @@ if __name__ == '__main__':
                 date_now = current_date.strftime('%Y-%m-%d')
                 dli_vals = compute_dli_today(date_now)
                 insert_dli(Config.dli_table, dli_vals)
-                # insert_dli("test_dli_table_0", dli_vals)
                 print(dli_vals)
                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
                 print(f"[{formatted_datetime}] Insert successful")

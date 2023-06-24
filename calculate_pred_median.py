@@ -61,10 +61,6 @@ def compute_median():
     # Find the dates whose medians are not calculated yet
     date_list =  find_missing_dates(median_date_list, count_date_list)
 
-    print(f"all dates ({len(count_date_list)}):", count_date_list)
-    print(f"median ({len(median_date_list)}):", median_date_list)
-    print(f"result({len(date_list)}):", date_list)
-
     temp_df = count_df.copy()
     temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
     
@@ -162,18 +158,12 @@ create_pred_table(Config.pred_median_table)
 vals = compute_median()
 insert_predictions_data(Config.pred_median_table, vals)
 new_df = pd.DataFrame(vals)
-# new_df.to_csv("new_compute_all_median_results.csv")
 
 if len(vals) == 0:
     print("Median calculations are already up to date.")
 else:
     print("Database has been updated with latest medians.")
 
-
-# Delete, use for testing when dropped 
-# all_dict = compute_all_median()
-# all_df = pd.DataFrame(all_dict)
-# all_df.to_csv("compute_all_median_results.csv")
 
 if __name__ == '__main__':
     try:
