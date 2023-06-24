@@ -286,12 +286,16 @@ def compute_all_dli():
     return dli_vals
 
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-# vals = compute_dli()
-# insert_dli(Config.dli_table, vals)
-# if len(vals) == 0:
-#     print("Computation are already up to date.")
-# else:
-#     print("Database has been updated with latest DLI.")
+create_dli_table(Config.dli_table)
+vals = compute_dli()
+insert_dli(Config.dli_table, vals)
+new_df = pd.DataFrame(vals)
+new_df.to_csv("new_compute_all_dli_results.csv")
+
+if len(vals) == 0:
+    print("DLI calculations are already up to date.")
+else:
+    print("Database has been updated with latest DLI.")
 
 
 # Delete, use for testing when dropped 
@@ -302,21 +306,21 @@ all_df = pd.DataFrame(all_dict)
 all_df.to_csv("compute_all_dli_results.csv")
 
 # Main function
-# if __name__ == '__main__':
-#     try:
-#         print("Running DLI calculator program...")
-#         while True:
-#             now = dt.datetime.now()
-#             if now.hour == 18 and now.minute == 47:
-#                 current_date = dt.date.today()
-#                 date_now = current_date.strftime('%Y-%m-%d')
-#                 dli_vals = compute_dli_today(date_now)
-#                 # insert_dli("dli_table_0", dli_vals)
-#                 insert_dli("test_dli_table_0", dli_vals)
-#                 print(dli_vals)
-#                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-#                 print(f"[{formatted_datetime}] Insert successful")
-#             time.sleep(60) 
-#     except KeyboardInterrupt:
-#         print("Exited.")
+if __name__ == '__main__':
+    try:
+        print("Running DLI calculator program...")
+        while True:
+            now = dt.datetime.now()
+            if now.hour == 23 and now.minute == 50:
+                current_date = dt.date.today()
+                date_now = current_date.strftime('%Y-%m-%d')
+                dli_vals = compute_dli_today(date_now)
+                insert_dli(Config.dli_table, dli_vals)
+                # insert_dli("test_dli_table_0", dli_vals)
+                print(dli_vals)
+                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{formatted_datetime}] Insert successful")
+            time.sleep(60) 
+    except KeyboardInterrupt:
+        print("Exited.")
 

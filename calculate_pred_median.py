@@ -158,31 +158,35 @@ def compute_all_median():
 
 # Performs operation for missing dates
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-# vals = compute_median()
-# insert_dli(Config.dli_table, vals)
-# if len(vals) == 0:
-#     print("Computation are already up to date.")
-# else:
-#     print("Database has been updated with latest DLI.")
+create_pred_table(Config.pred_median_table)
+vals = compute_median()
+insert_prediction_data(Config.pred_median_table, vals)
+new_df = pd.DataFrame(vals)
+new_df.to_csv("new_compute_all_median_results.csv")
+
+if len(vals) == 0:
+    print("Median calculations are already up to date.")
+else:
+    print("Database has been updated with latest medians.")
 
 
 # Delete, use for testing when dropped 
-all_dict = compute_all_median()
-all_df = pd.DataFrame(all_dict)
-all_df.to_csv("compute_all_median_results.csv")
+# all_dict = compute_all_median()
+# all_df = pd.DataFrame(all_dict)
+# all_df.to_csv("compute_all_median_results.csv")
 
-# if __name__ == '__main__':
-#     try:
-#         print("Running prediction median calculator program...")
-#         while True:
-#             now = dt.datetime.now()
-#             if now.hour == 23 and now.minute == 50:
-#                 current_date = dt.date.today()
-#                 date_now = current_date.strftime('%Y-%m-%d')
-#                 median_vals = compute_median_today(date_now)
-                # insert_predictions_data(Confid.pred_median_table, median_vals)
-#                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-#                 print(f"[{formatted_datetime}] Insert successful")     
-#             time.sleep(60) 
-#     except KeyboardInterrupt:
-#         print("Exited.")
+if __name__ == '__main__':
+    try:
+        print("Running prediction median calculator program...")
+        while True:
+            now = dt.datetime.now()
+            if now.hour == 23 and now.minute == 50:
+                current_date = dt.date.today()
+                date_now = current_date.strftime('%Y-%m-%d')
+                median_vals = compute_median_today(date_now)
+                insert_predictions_data(Config.pred_median_table, median_vals)
+                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{formatted_datetime}] Insert successful")     
+            time.sleep(60) 
+    except KeyboardInterrupt:
+        print("Exited.")
