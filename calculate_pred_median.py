@@ -50,7 +50,8 @@ def compute_median():
 
     preds_df = get_all_preds(connection, Config.predictions_table)
     medians_df = get_all_preds(connection, Config.pred_median_table)
-
+    preds_df = sort_by_date(preds_df)
+    
     # Filter with just the desired data types
     count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
     
@@ -132,8 +133,9 @@ def compute_all_median():
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
-    preds_df = get_all_preds(connection, "pred_table_0")
-    
+    preds_df = get_all_preds(connection, Config.predictions_table)
+    preds_df = sort_by_date(preds_df)
+
     count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
     date_list = get_list_dates(count_df)
     
@@ -177,8 +179,8 @@ all_df.to_csv("compute_all_median_results.csv")
 #             if now.hour == 23 and now.minute == 50:
 #                 current_date = dt.date.today()
 #                 date_now = current_date.strftime('%Y-%m-%d')
-#                 dli_vals = compute_median_today(date_now)
-#                 insert_dli("dli_table_0", dli_vals)
+#                 median_vals = compute_median_today(date_now)
+                # insert_predictions_data(Confid.pred_median_table, median_vals)
 #                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
 #                 print(f"[{formatted_datetime}] Insert successful")     
 #             time.sleep(60) 
