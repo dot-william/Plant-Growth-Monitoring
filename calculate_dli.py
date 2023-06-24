@@ -82,8 +82,10 @@ def get_specific_li(index):
 # This function finds the missing dates from a certain list of dates
 def find_missing_dates(existing_dates, all_dates):
     missing_dates = []
+    current_date = dt.date.today()
+    date_now = current_date.strftime('%Y-%m-%d')
     for date in all_dates:
-        if date not in existing_dates:
+        if date not in existing_dates and date != date_now:
             missing_dates.append(date)
     return missing_dates
 
@@ -224,19 +226,21 @@ def compute_dli_today(date):
 compute_dli()
 
 # Main function
-# if __name__ == '__main__':
-#     try:
-#         print("Running DLI calculator program...")
-#         while True:
-#             now = dt.datetime.now()
-#             if now.hour == 23 and now.minute == 50:
-#                 current_date = dt.date.today()
-#                 date_now = current_date.strftime('%Y-%m-%d')
-#                 dli_vals = compute_dli_today(date_now)
-#                 insert_dli("dli_table_0", dli_vals)
-#                 formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-#                 print(f"[{formatted_datetime}] Insert successful")
-#             time.sleep(60) 
-#     except KeyboardInterrupt:
-#         print("Exited.")
+if __name__ == '__main__':
+    try:
+        print("Running DLI calculator program...")
+        while True:
+            now = dt.datetime.now()
+            if now.hour == 18 and now.minute == 47:
+                current_date = dt.date.today()
+                date_now = current_date.strftime('%Y-%m-%d')
+                dli_vals = compute_dli_today(date_now)
+                # insert_dli("dli_table_0", dli_vals)
+                insert_dli("test_dli_table_0", dli_vals)
+                print(dli_vals)
+                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+                print(f"[{formatted_datetime}] Insert successful")
+            time.sleep(60) 
+    except KeyboardInterrupt:
+        print("Exited.")
 
