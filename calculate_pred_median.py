@@ -162,7 +162,7 @@ create_pred_table(Config.pred_median_table)
 vals = compute_median()
 insert_prediction_data(Config.pred_median_table, vals)
 new_df = pd.DataFrame(vals)
-new_df.to_csv("new_compute_all_median_results.csv")
+# new_df.to_csv("new_compute_all_median_results.csv")
 
 if len(vals) == 0:
     print("Median calculations are already up to date.")
