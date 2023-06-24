@@ -29,10 +29,13 @@ def get_list_dates(df):
 
 # This function finds the missing dates from a certain list of dates
 def find_missing_dates(existing_dates, all_dates):
+    # Add date today
     missing_dates = []
     for date in all_dates:
         if date not in existing_dates:
             missing_dates.append(date)
+
+    
     return missing_dates
 
 # Function that computes median prediction of the day
