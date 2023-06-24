@@ -37,7 +37,6 @@ def close_mysql_connection(mysql_connection, mysql_cursor):
     try:
         mysql_cursor.close()
         mysql_connection.close()
-        print("Cursor and Connection closed")
     except Exception as err:
         print("Unsuccessful closing of cursor and connection with error:", err)
     
