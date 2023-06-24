@@ -290,7 +290,7 @@ create_dli_table(Config.dli_table)
 vals = compute_dli()
 insert_dli(Config.dli_table, vals)
 new_df = pd.DataFrame(vals)
-new_df.to_csv("new_compute_all_dli_results.csv")
+# new_df.to_csv("new_compute_all_dli_results.csv")
 
 if len(vals) == 0:
     print("DLI calculations are already up to date.")
