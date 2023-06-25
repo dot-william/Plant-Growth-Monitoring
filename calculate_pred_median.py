@@ -152,21 +152,22 @@ def compute_all_median():
             # vals.append(val)
     return vals
 
-# Performs operation for missing dates
-# Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-create_pred_table(Config.pred_median_table)
-vals = compute_median()
-insert_predictions_data(Config.pred_median_table, vals)
-new_df = pd.DataFrame(vals)
 
-if len(vals) == 0:
-    print("Median calculations are already up to date.")
-else:
-    print("Database has been updated with latest medians.")
-
-
+# Main function
 if __name__ == '__main__':
     try:
+        # Performs operation for missing dates
+        # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
+        create_pred_table(Config.pred_median_table)
+        vals = compute_median()
+        insert_predictions_data(Config.pred_median_table, vals)
+        new_df = pd.DataFrame(vals)
+
+        if len(vals) == 0:
+            print("Median calculations are already up to date.")
+        else:
+            print("Database has been updated with latest medians.")
+
         print("Running prediction median calculator program...")
         while True:
             now = dt.datetime.now()
