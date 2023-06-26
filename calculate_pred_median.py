@@ -83,7 +83,7 @@ def compute_median_today(date):
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
-    preds_df = get_all_preds(connection, "pred_table_0")
+    preds_df = get_all_preds(connection, Config.predictions_table)
     
     count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
     date_list = get_list_dates(count_df)
@@ -92,16 +92,23 @@ def compute_median_today(date):
     temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
     
     vals = []
+
     # Get values from sepecific date
     specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
-    for pred_type in data_types:
-        prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
-        median = prediction["value"].median()
-        mean = prediction["value"].mean()
-        val = make_dict(date, expt_num, pred_type+append_str_median, median)
-        vals.append(val)
-        # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-        # vals.append(val)
+
+    if specific_date_counts.empty:
+        now = dt.datetime.now()
+        formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{formatted_datetime}] No data to currently process.")
+    else: 
+        for pred_type in data_types:
+            prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
+            median = prediction["value"].median()
+            # mean = prediction["value"].mean()
+            val = make_dict(date, expt_num, pred_type+append_str_median, median)
+            vals.append(val)
+            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
+            # vals.append(val)
     return vals
 
 def get_specific_pred(pred_type):
@@ -152,6 +159,16 @@ def compute_all_median():
             # vals.append(val)
     return vals
 
+# Performs operation for missing dates
+# Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
+create_pred_table(Config.pred_median_table)
+vals = compute_median()
+
+if len(vals) == 0:
+    print("Median calculations are already up to date.")
+else:
+    insert_predictions_data(Config.pred_median_table, vals)
+    print("Database has been updated with latest medians.")
 
 # Main function
 if __name__ == '__main__':
@@ -175,9 +192,8 @@ if __name__ == '__main__':
                 current_date = dt.date.today()
                 date_now = current_date.strftime('%Y-%m-%d')
                 median_vals = compute_median_today(date_now)
-                insert_predictions_data(Config.pred_median_table, median_vals)
-                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-                print(f"[{formatted_datetime}] Insert successful")     
+                if len(median_vals) != 0:
+                    insert_predictions_data(Config.pred_median_table, median_vals)
             time.sleep(60) 
     except KeyboardInterrupt:
         print("Exited.")

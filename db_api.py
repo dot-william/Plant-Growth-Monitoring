@@ -1,7 +1,8 @@
 import pymysql.cursors
 import mysql.connector
 import pandas as pd
-import datetime
+from datetime import datetime
+import datetime as dt
 import sqlalchemy
 # https://stackoverflow.com/questions/28981770/store-sql-result-in-a-variable-in-python
 
@@ -160,6 +161,7 @@ def insert_dli(table_name, raw_data):
             value = float(data["value"])
             cursor.execute(query, (date, expt_num, type_value, sensor_idx, value))
             db.commit() 
+            log_message("Insert successful.")
         close_mysql_connection(db, cursor)
     except Exception as err:
         print("An error has occurred:", err)
@@ -193,7 +195,9 @@ def insert_predictions_data(table_name, raw_data):
             value = float(data["value"])
             cursor.execute(query, (date, expt_num, type_value, value))
             db.commit() 
+            log_message("Insert successful.")
         close_mysql_connection(db, cursor)
+        
     except Exception as err:
         print("An error has occurred in inserting", err)
 
@@ -210,7 +214,12 @@ def insert_prediction_data(table_name, data):
         cursor.execute(query, (date, expt_num, type_value, value))
         db.commit() 
         close_mysql_connection(db, cursor)
+        log_message("Insert successful.")
     except Exception as err:
         print("An error has occurred in inserting", err)
 
 
+def log_message(message):
+    now = dt.datetime.now()
+    formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+    print(f"[{formatted_datetime}] {message}")  
