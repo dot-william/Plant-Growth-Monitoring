@@ -121,9 +121,10 @@ def compute_dli():
     # Get list of dates
     intensity_dates = get_list_dates(intensity_df)
     dli_dates = get_list_dates(dli_df) 
-
+    print(f"{len(intensity_dates)} Intensity")
+    print(f"{len(dli_dates)} DLi dates")
     date_list = find_missing_dates(dli_dates, intensity_dates)
-
+    print(f"{len(date_list)} missing")
     for date in date_list:
 
         # Get values based on date 
@@ -193,28 +194,33 @@ def compute_dli_today(date):
     # Convert to dictionary
     intensities = df_to_dicts(specific_date_intensities)
 
-    # Iterate data through indices
-    for index in light_intensity_indices:
-        # Get desired intensities based on index
-        desired_intensities = get_intensity_from_dict(intensities, index)
+    if specific_date_intensities.empty:
+        now = dt.datetime.now()
+        formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{formatted_datetime}] No data to currently process.")
+    else:
+        # Iterate data through indices
+        for index in light_intensity_indices:
+            # Get desired intensities based on index
+            desired_intensities = get_intensity_from_dict(intensities, index)
 
-        # Reinitialize variables
-        integral = 0
-        i = 0
-        datetime_temp = []
+            # Reinitialize variables
+            integral = 0
+            i = 0
+            datetime_temp = []
 
-        for i in range(len(desired_intensities)):
-            date_time = convert_str_datetime(desired_intensities[i]["datetime"])
-            datetime_temp.append(date_time)
-            ppfd = compute_ppfd(desired_intensities[i]["value"])
+            for i in range(len(desired_intensities)):
+                date_time = convert_str_datetime(desired_intensities[i]["datetime"])
+                datetime_temp.append(date_time)
+                ppfd = compute_ppfd(desired_intensities[i]["value"])
 
-            # Do not count the first element of the day
-            if i > 0:               
-                seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
-                integral = integral + (ppfd * seconds_difference)
+                # Do not count the first element of the day
+                if i > 0:               
+                    seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
+                    integral = integral + (ppfd * seconds_difference)
 
-        dli_val = make_dict(date, expt_num, data_type, index, integral)
-        dli_vals.append(dli_val)
+            dli_val = make_dict(date, expt_num, data_type, index, integral)
+            dli_vals.append(dli_val)
     return dli_vals
 
 # Function that computes all DLI of the whole DB
@@ -283,12 +289,12 @@ def compute_all_dli():
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
 create_dli_table(Config.dli_table)
 vals = compute_dli()
-insert_dli(Config.dli_table, vals)
-new_df = pd.DataFrame(vals)
+
 
 if len(vals) == 0:
     print("DLI calculations are already up to date.")
 else:
+    insert_dli(Config.dli_table, vals)
     print("Database has been updated with latest DLI.")
 
 
@@ -302,10 +308,9 @@ if __name__ == '__main__':
                 current_date = dt.date.today()
                 date_now = current_date.strftime('%Y-%m-%d')
                 dli_vals = compute_dli_today(date_now)
-                insert_dli(Config.dli_table, dli_vals)
-                print(dli_vals)
-                formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-                print(f"[{formatted_datetime}] Insert successful")
+                
+                if len(dli_vals) != 0:
+                    insert_dli(Config.dli_table, dli_vals)
             time.sleep(60) 
     except KeyboardInterrupt:
         print("Exited.")
