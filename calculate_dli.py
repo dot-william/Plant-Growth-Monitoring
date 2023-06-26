@@ -120,10 +120,9 @@ def compute_dli():
     # Get list of dates
     intensity_dates = get_list_dates(intensity_df)
     dli_dates = get_list_dates(dli_df) 
-    print(f"{len(intensity_dates)} Intensity")
-    print(f"{len(dli_dates)} DLi dates")
+   
     date_list = find_missing_dates(dli_dates, intensity_dates)
-    print(f"{len(date_list)} missing")
+    
     for date in date_list:
 
         # Get values based on date 
