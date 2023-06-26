@@ -107,7 +107,6 @@ def compute_dli():
 
     # Get unique indices
     light_intensity_indices = intensity_df['index'].unique()
-    # print("Indices from light intensity:", light_intensity_indices)
 
     # Initialize variables
     datetime_temp = []
@@ -301,6 +300,17 @@ else:
 # Main function
 if __name__ == '__main__':
     try:
+        # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
+        create_dli_table(Config.dli_table)
+        vals = compute_dli()
+        insert_dli(Config.dli_table, vals)
+        new_df = pd.DataFrame(vals)
+
+        if len(vals) == 0:
+            print("DLI calculations are already up to date.")
+        else:
+            print("Database has been updated with latest DLI.")
+
         print("Running DLI calculator program...")
         while True:
             now = dt.datetime.now()
