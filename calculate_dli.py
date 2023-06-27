@@ -33,11 +33,11 @@ def convert_str_datetime(date_time_str):
     
     try:
         date_time_str = str(date_time_str)
-        converted = datetime.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
+        converted = dt.datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S')
     except:
-        date_obj = datetime.datetime.strptime(date_time_str, '%m/%d/%Y %H:%M')
-        date_str = datetime.datetime.strftime(date_obj, '%Y-%m-%d %H:%M:%S')
-        converted = datetime.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
+        date_obj = dt.datetime.strptime(date_time_str, '%m/%d/%Y %H:%M')
+        date_str = dt.datetime.strftime(date_obj, '%Y-%m-%d %H:%M:%S')
+        converted = dt.datetime.strptime(date_str, '%Y-%m-%d %H:%M:%S')
     
     return converted
 
@@ -283,6 +283,7 @@ def compute_all_dli():
             dli_val = make_dict(date, expt_num, data_type, index, integral)
             dli_vals.append(dli_val)
     return dli_vals
+
 
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
 create_dli_table(Config.dli_table)
