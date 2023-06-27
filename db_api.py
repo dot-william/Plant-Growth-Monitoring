@@ -218,7 +218,6 @@ def insert_prediction_data(table_name, data):
     except Exception as err:
         print("An error has occurred in inserting", err)
 
-
 def log_message(message):
     now = dt.datetime.now()
     formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
