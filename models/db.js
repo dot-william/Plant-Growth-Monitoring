@@ -40,7 +40,6 @@ const database = {
      * @param data data that was parsed from the JSON that was sent to the broker
      * @param db_name name of the database where data will be stored
      * @param location name of the table where data will be stored
-     * @param error boolean variable to identify if an error has occured to record error to the table error table
      */
     enterData : function (data, db_name, location) {
         let sql = `SELECT count(*) FROM information_schema.tables
