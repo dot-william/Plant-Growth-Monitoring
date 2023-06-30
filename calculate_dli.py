@@ -28,7 +28,7 @@ def df_to_dicts(df):
     dict = df.to_dict('records')
     return dict
 
-# Convert column to datetime 
+# Convert string to datetime 
 def convert_str_datetime(date_time_str):
     
     try:
@@ -47,7 +47,7 @@ def drop_NaNs(specific_light_intensities):
     specific_light_intensities = specific_light_intensities.reset_index(drop=True)
     return specific_light_intensities
 
-# Returns the list of dates in a dataframe
+# Returns the list of dates from a dataframe
 def get_list_dates(intensity_df):
     copy_df = intensity_df.copy()
     copy_df['datetime'] = pd.to_datetime(copy_df['datetime'])
@@ -220,70 +220,6 @@ def compute_dli_today(date):
             dli_val = make_dict(date, expt_num, data_type, index, integral)
             dli_vals.append(dli_val)
     return dli_vals
-
-# Function that computes all DLI of the whole DB
-def compute_all_dli():
-    expt_num = 0
-    data_type = "dli"
-
-    # Initialize connection to DB
-    connection = create_engine()
-    sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
-
-    # Filter to only light intensities
-    intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
-
-    intensity_df = drop_NaNs(intensity_df)
-
-
-    # Get unique indices
-    light_intensity_indices = intensity_df['index'].unique()
-    # print("Indices from light intensity:", light_intensity_indices)
-
-    # Initialize variables
-    datetime_temp = []
-    dli_vals = []
-    integral = 0 
-
-    # Copy df to convert to datetime
-    temp_df = intensity_df.copy()
-    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
-
-    # Get list of dates
-    date_list = get_list_dates(intensity_df)
-
-    for date in date_list:
-
-        # Get values based on date 
-        specific_date_intensities = intensity_df[temp_df['datetime'].dt.normalize() == date]
-        
-        # Convert to dictionary
-        intensities = df_to_dicts(specific_date_intensities)
-
-        # Iterate data through indices
-        for index in light_intensity_indices:
-            # Get desired intensities based on index
-            desired_intensities = get_intensity_from_dict(intensities, index)
-
-            # Reinitialize variables
-            integral = 0
-            i = 0
-            datetime_temp = []
-
-            for i in range(len(desired_intensities)):
-                date_time = convert_str_datetime(desired_intensities[i]["datetime"])
-                datetime_temp.append(date_time)
-                ppfd = compute_ppfd(desired_intensities[i]["value"])
-                
-                # Do not count the first element of the day
-                if i > 0:
-                    seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
-                    integral = integral + (ppfd * seconds_difference)
-        
-            dli_val = make_dict(date, expt_num, data_type, index, integral)
-            dli_vals.append(dli_val)
-    return dli_vals
-
 
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
 create_dli_table(Config.dli_table)
