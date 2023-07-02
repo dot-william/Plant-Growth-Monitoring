@@ -67,6 +67,7 @@ def get_all_values(pymysql_connection, table_name):
     Retrieves all rows from a certain table 
     
     Args:
+        pymysql_connection (object): PyMySql connection
         table_name (string): name of the table to get values from
     Returns:
         Pandas df containing the results of the query 
@@ -104,7 +105,7 @@ def get_all_preds(pymysql_connection, table_name):
     finally:
         return df
     
-# 2. Function gets the latest sensor data, and displays it
+
 def get_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type):
     try:
         query = "SELECT * FROM " + table_name + " WHERE ID=(SELECT MAX(id) FROM " + table_name + " WHERE sensor_idx = %s AND type = %s )"

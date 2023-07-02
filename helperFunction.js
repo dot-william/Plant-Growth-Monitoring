@@ -42,10 +42,9 @@ const helper = {
      * @param topic topic sent by the broker
      * @param validTopics array of valid topics to cross reference
      * @param validTopicType array of topic type to cross reference e.g. temperature, humidity, etc
-     * @returns boolean if the topic is valid or not
      */
     checkTopic : function (topic, validTopics, validTopicType) {
-        // Add validation, invalid topic not shift etc, and log the error to the db
+        
         let splittedTopic = topic.split('/');
         let validTopicsLength = (splittedTopic.length - 1);
         let isValid = true;
