@@ -275,17 +275,6 @@ def compute_dli_today_v2(date):
             dli_vals.append(dli_val)
     return dli_vals
 
-# Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-# create_dli_table(Config.dli_table)
-# vals = compute_dli()
-
-
-# if len(vals) == 0:
-#     print("DLI calculations are already up to date.")
-# else:
-#     insert_dli(Config.dli_table, vals)
-#     print("Database has been updated with latest DLI.")
-
 
 # Main function
 # if __name__ == '__main__':
