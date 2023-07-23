@@ -308,11 +308,21 @@ def compute_dli_today_v2(date):
 now = dt.datetime.now()
 current_date = dt.date.today()
 date_now = current_date.strftime('%Y-%m-%d')
-dli_vals = compute_dli_today(date_now)
-dli_vals2 = compute_dli_today_v2(date_now)
+
+start_time = time.time()
+dli_vals = compute_dli_today("2023-07-24")
+end_time = time.time()
+
+start_time1 = time.time()
+dli_vals2 = compute_dli_today_v2("2023-07-24")
+end_time1 = time.time()
+perf = end_time - start_time
+perf1 = end_time1 - start_time1
 
 df1 = pd.DataFrame(dli_vals)
 df2 = pd.DataFrame(dli_vals2)
 
 print("DF1!!!", df1.head())
+print("peroformance: ", perf)
 print("DF2!!!", df2.head())
+print("peroformance1: ", perf1)
