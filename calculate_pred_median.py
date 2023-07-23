@@ -120,7 +120,7 @@ def compute_median_today_v2(date):
     df1 = get_pred_type_date(connection, Config.predictions_table, data_types[0], date)
     df2 = get_pred_type_date(connection, Config.predictions_table, data_types[1], date)
     df3 = get_pred_type_date(connection, Config.predictions_table, data_types[2], date)
-    preds_df = df1.append([df2, df3], ignore_index=True)
+    preds_df = pd.concat([df1, df2, df3], ignore_index=True)
     
 
     vals = []
