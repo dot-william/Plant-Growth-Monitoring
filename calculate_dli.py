@@ -221,43 +221,109 @@ def compute_dli_today(date):
             dli_vals.append(dli_val)
     return dli_vals
 
+# Computes DLI on a given date
+def compute_dli_today_v2(date):
+    expt_num = 0
+    data_type = "dli"
+
+    # Initialize connection to DB
+    connection = create_engine()
+    intensity_df =  get_sensor_type_values_today(connection, Config.sensors_table, "light_intensity", date)
+
+    # Filter to only light intensities
+    # intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
+    intensity_df = drop_NaNs(intensity_df)
+
+    # Get unique indices
+    light_intensity_indices = intensity_df['index'].unique()
+    # print("Indices from light intensity:", light_intensity_indices)
+
+    # Initialize variables
+    datetime_temp = []
+    dli_vals = []
+    integral = 0 
+
+    # Convert to dictionary
+    intensities = df_to_dicts(intensity_df)
+
+    if intensity_df.empty:
+        now = dt.datetime.now()
+        formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"[{formatted_datetime}] No data to currently process.")
+    else:
+        # Iterate data through indices
+        for index in light_intensity_indices:
+            # Get desired intensities based on index
+            desired_intensities = get_intensity_from_dict(intensities, index)
+
+            # Reinitialize variables
+            integral = 0
+            i = 0
+            datetime_temp = []
+
+            for i in range(len(desired_intensities)):
+                date_time = convert_str_datetime(desired_intensities[i]["datetime"])
+                datetime_temp.append(date_time)
+                ppfd = compute_ppfd(desired_intensities[i]["value"])
+
+                # Do not count the first element of the day
+                if i > 0:               
+                    seconds_difference = compute_time_difference(datetime_temp[i], datetime_temp[i-1])
+                    integral = integral + (ppfd * seconds_difference)
+
+            dli_val = make_dict(date, expt_num, data_type, index, integral)
+            dli_vals.append(dli_val)
+    return dli_vals
+
 # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-create_dli_table(Config.dli_table)
-vals = compute_dli()
+# create_dli_table(Config.dli_table)
+# vals = compute_dli()
 
 
-if len(vals) == 0:
-    print("DLI calculations are already up to date.")
-else:
-    insert_dli(Config.dli_table, vals)
-    print("Database has been updated with latest DLI.")
+# if len(vals) == 0:
+#     print("DLI calculations are already up to date.")
+# else:
+#     insert_dli(Config.dli_table, vals)
+#     print("Database has been updated with latest DLI.")
 
 
 # Main function
-if __name__ == '__main__':
-    try:
-        # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-        create_dli_table(Config.dli_table)
-        vals = compute_dli()
-        insert_dli(Config.dli_table, vals)
-        new_df = pd.DataFrame(vals)
+# if __name__ == '__main__':
+#     try:
+#         # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
+#         create_dli_table(Config.dli_table)
+#         vals = compute_dli()
+#         insert_dli(Config.dli_table, vals)
+#         new_df = pd.DataFrame(vals)
 
-        if len(vals) == 0:
-            print("DLI calculations are already up to date.")
-        else:
-            print("Database has been updated with latest DLI.")
+#         if len(vals) == 0:
+#             print("DLI calculations are already up to date.")
+#         else:
+#             print("Database has been updated with latest DLI.")
 
-        print("Running DLI calculator program...")
-        while True:
-            now = dt.datetime.now()
-            if now.hour == 23 and now.minute == 50:
-                current_date = dt.date.today()
-                date_now = current_date.strftime('%Y-%m-%d')
-                dli_vals = compute_dli_today(date_now)
+#         print("Running DLI calculator program...")
+#         while True:
+#             now = dt.datetime.now()
+#             if now.hour == 23 and now.minute == 50:
+#                 current_date = dt.date.today()
+#                 date_now = current_date.strftime('%Y-%m-%d')
+#                 dli_vals = compute_dli_today(date_now)
                 
-                if len(dli_vals) != 0:
-                    insert_dli(Config.dli_table, dli_vals)
-            time.sleep(60) 
-    except KeyboardInterrupt:
-        print("Exited.")
+#                 if len(dli_vals) != 0:
+#                     insert_dli(Config.dli_table, dli_vals)
+#             time.sleep(60) 
+#     except KeyboardInterrupt:
+#         print("Exited.")
 
+# Test
+now = dt.datetime.now()
+current_date = dt.date.today()
+date_now = current_date.strftime('%Y-%m-%d')
+dli_vals = compute_dli_today(date_now)
+dli_vals2 = compute_dli_today_v2(date_now)
+
+df1 = pd.DataFrame(dli_vals)
+df2 = pd.DataFrame(dli_vals2)
+
+print("DF1!!!", df1.head())
+print("DF2!!!", df2.head())
