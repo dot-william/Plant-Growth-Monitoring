@@ -67,6 +67,8 @@ def get_sensor_type_values_today(pymysql_connection, table_name, sensor_type, da
     try:
         query = "SELECT * FROM " + table_name + " WHERE type = %s AND date(datetime) = %s"
         df = pd.read_sql_query(query, pymysql_connection, params=[sensor_type, date])
+        df.drop(['id'], axis=1, inplace=True)
+        df = df.rename(columns={"sensor_idx":"index"})
     except Exception as err:
         print("Error occured:", err)
     finally:
