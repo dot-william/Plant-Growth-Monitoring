@@ -62,6 +62,17 @@ def get_values(pymysql_connection, table_name, sensor_idx, sensor_type):
     finally:
         return df
 
+def get_sensor_type_values_today(pymysql_connection, table_name, sensor_type, date):
+    df = []
+    try:
+        query = "SELECT * FROM " + table_name + " WHERE type = %s AND datetime = %s"
+        df = pd.read_sql_query(query, pymysql_connection, params=[sensor_type, date])
+    except Exception as err:
+        print("Error occured:", err)
+    finally:
+        return df
+    
+
 def get_all_values(pymysql_connection, table_name):
     """
     Retrieves all rows from a certain table 
