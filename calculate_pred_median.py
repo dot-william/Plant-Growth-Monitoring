@@ -186,3 +186,25 @@ def df_to_dicts(df):
 #             time.sleep(60) 
 #     except KeyboardInterrupt:
 #         print("Exited.")
+
+now = dt.datetime.now()
+current_date = dt.date.today()
+date_now = current_date.strftime('%Y-%m-%d')
+
+start_time = time.time()
+dli_vals = compute_median_today("2023-07-20")
+end_time = time.time()
+
+start_time1 = time.time()
+dli_vals2 = compute_median_today_v2("2023-07-20")
+end_time1 = time.time()
+perf = end_time - start_time
+perf1 = end_time1 - start_time1
+
+df1 = pd.DataFrame(dli_vals)
+df2 = pd.DataFrame(dli_vals2)
+
+print("DF1!!!", df1.head())
+print("peroformance: ", perf)
+print("DF2!!!", df2.head())
+print("peroformance1: ", perf1)
