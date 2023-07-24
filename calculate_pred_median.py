@@ -83,40 +83,6 @@ def compute_median_today(date):
     
     data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
     connection = create_engine()
-    preds_df = get_all_preds(connection, Config.predictions_table)
-    
-    count_df = preds_df[(preds_df["type"] == data_types[0]) | (preds_df["type"] == data_types[1]) | (preds_df["type"] == data_types[2])]
-    
-    temp_df = count_df.copy()
-    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
-    
-    vals = []
-
-    # Get values from sepecific date
-    specific_date_counts = count_df[temp_df['datetime'].dt.normalize() == date]
-
-    if specific_date_counts.empty:
-        now = dt.datetime.now()
-        formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{formatted_datetime}] No data to currently process.")
-    else: 
-        for pred_type in data_types:
-            prediction = specific_date_counts[(specific_date_counts["type"] == pred_type)]
-            median = prediction["value"].median()
-            # mean = prediction["value"].mean()
-            val = make_dict(date, expt_num, pred_type+append_str_median, median)
-            vals.append(val)
-            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-            # vals.append(val)
-    return vals
-
-def compute_median_today_v2(date):
-    expt_num = 0
-    append_str_median = "_median"
-    # append_str_mean = "_mean"
-    
-    data_types = ["pred_leaf_count", "pred_flower_count", "pred_fruit_count"]
-    connection = create_engine()
     df1 = get_pred_type_date(connection, Config.predictions_table, data_types[0], date)
     df2 = get_pred_type_date(connection, Config.predictions_table, data_types[1], date)
     df3 = get_pred_type_date(connection, Config.predictions_table, data_types[2], date)
@@ -159,52 +125,30 @@ def df_to_dicts(df):
     return dict
 
 
-# # Main function
-# if __name__ == '__main__':
-#     try:
-#         # Performs operation for missing dates
-#         # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-#         create_pred_table(Config.pred_median_table)
-#         vals = compute_median()
-#         insert_predictions_data(Config.pred_median_table, vals)
-#         new_df = pd.DataFrame(vals)
+# Main function
+if __name__ == '__main__':
+    try:
+        # Performs operation for missing dates
+        # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
+        create_pred_table(Config.pred_median_table)
+        vals = compute_median()
+        insert_predictions_data(Config.pred_median_table, vals)
+        new_df = pd.DataFrame(vals)
 
-#         if len(vals) == 0:
-#             print("Median calculations are already up to date.")
-#         else:
-#             print("Database has been updated with latest medians.")
+        if len(vals) == 0:
+            print("Median calculations are already up to date.")
+        else:
+            print("Database has been updated with latest medians.")
 
-#         print("Running prediction median calculator program...")
-#         while True:
-#             now = dt.datetime.now()
-#             if now.hour == 23 and now.minute == 50:
-#                 current_date = dt.date.today()
-#                 date_now = current_date.strftime('%Y-%m-%d')
-#                 median_vals = compute_median_today(date_now)
-#                 if len(median_vals) != 0:
-#                     insert_predictions_data(Config.pred_median_table, median_vals)
-#             time.sleep(60) 
-#     except KeyboardInterrupt:
-#         print("Exited.")
-
-now = dt.datetime.now()
-current_date = dt.date.today()
-date_now = current_date.strftime('%Y-%m-%d')
-
-start_time = time.time()
-dli_vals = compute_median_today("2023-07-20")
-end_time = time.time()
-
-start_time1 = time.time()
-dli_vals2 = compute_median_today_v2("2023-07-20")
-end_time1 = time.time()
-perf = end_time - start_time
-perf1 = end_time1 - start_time1
-
-df1 = pd.DataFrame(dli_vals)
-df2 = pd.DataFrame(dli_vals2)
-
-print("DF1!!!", df1.head())
-print("peroformance: ", perf)
-print("DF2!!!", df2.head())
-print("peroformance1: ", perf1)
+        print("Running prediction median calculator program...")
+        while True:
+            now = dt.datetime.now()
+            if now.hour == 23 and now.minute == 50:
+                current_date = dt.date.today()
+                date_now = current_date.strftime('%Y-%m-%d')
+                median_vals = compute_median_today(date_now)
+                if len(median_vals) != 0:
+                    insert_predictions_data(Config.pred_median_table, median_vals)
+            time.sleep(60) 
+    except KeyboardInterrupt:
+        print("Exited.")
