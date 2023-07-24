@@ -163,14 +163,10 @@ def compute_dli_today(date):
 
     # Initialize connection to DB
     connection = create_engine()
-    sensor_df = get_all_values(connection, "dlsu_cherrytomato_0")
+    intensity_df =  get_sensor_type_values_today(connection, Config.sensors_table, "light_intensity", date)
 
     # Filter to only light intensities
-    intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
-    intensity_df = drop_NaNs(intensity_df)
-
-    # Filter to only light intensities
-    intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
+    # intensity_df = sensor_df.loc[(sensor_df['type'] == 'light_intensity')]
     intensity_df = drop_NaNs(intensity_df)
 
     # Get unique indices
@@ -182,17 +178,10 @@ def compute_dli_today(date):
     dli_vals = []
     integral = 0 
 
-    # Copy df to convert to datetime
-    temp_df = intensity_df.copy()
-    temp_df['datetime'] = pd.to_datetime(temp_df['datetime'])
-
-    # Get values based on date 
-    specific_date_intensities = intensity_df[temp_df['datetime'].dt.normalize() == date]
-
     # Convert to dictionary
-    intensities = df_to_dicts(specific_date_intensities)
+    intensities = df_to_dicts(intensity_df)
 
-    if specific_date_intensities.empty:
+    if intensity_df.empty:
         now = dt.datetime.now()
         formatted_datetime = now.strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{formatted_datetime}] No data to currently process.")
@@ -221,43 +210,20 @@ def compute_dli_today(date):
             dli_vals.append(dli_val)
     return dli_vals
 
-# Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-create_dli_table(Config.dli_table)
-vals = compute_dli()
-
-
-if len(vals) == 0:
-    print("DLI calculations are already up to date.")
-else:
-    insert_dli(Config.dli_table, vals)
-    print("Database has been updated with latest DLI.")
-
 
 # Main function
-if __name__ == '__main__':
-    try:
-        # Compute DLI to see what are the missing DLI in the scenario the program isn't ran for days
-        create_dli_table(Config.dli_table)
-        vals = compute_dli()
-        insert_dli(Config.dli_table, vals)
-        new_df = pd.DataFrame(vals)
+# Test
+now = dt.datetime.now()
+current_date = dt.date.today()
+date_now = current_date.strftime('%Y-%m-%d')
 
-        if len(vals) == 0:
-            print("DLI calculations are already up to date.")
-        else:
-            print("Database has been updated with latest DLI.")
+start_time = time.time()
+dli_vals = compute_dli_today("2023-07-24")
+end_time = time.time()
 
-        print("Running DLI calculator program...")
-        while True:
-            now = dt.datetime.now()
-            if now.hour == 23 and now.minute == 50:
-                current_date = dt.date.today()
-                date_now = current_date.strftime('%Y-%m-%d')
-                dli_vals = compute_dli_today(date_now)
-                
-                if len(dli_vals) != 0:
-                    insert_dli(Config.dli_table, dli_vals)
-            time.sleep(60) 
-    except KeyboardInterrupt:
-        print("Exited.")
+perf = end_time - start_time
 
+df1 = pd.DataFrame(dli_vals)
+
+print("DF1!!!", df1.head())
+print("peroformance: ", perf)

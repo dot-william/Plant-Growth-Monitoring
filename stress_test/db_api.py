@@ -62,6 +62,19 @@ def get_values(pymysql_connection, table_name, sensor_idx, sensor_type):
     finally:
         return df
 
+def get_sensor_type_values_today(pymysql_connection, table_name, sensor_type, date):
+    df = []
+    try:
+        query = "SELECT * FROM " + table_name + " WHERE type = %s AND date(datetime) = %s"
+        df = pd.read_sql_query(query, pymysql_connection, params=[sensor_type, date])
+        df.drop(['id'], axis=1, inplace=True)
+        df = df.rename(columns={"sensor_idx":"index"})
+    except Exception as err:
+        print("Error occured:", err)
+    finally:
+        return df
+    
+
 def get_all_values(pymysql_connection, table_name):
     """
     Retrieves all rows from a certain table 
@@ -85,6 +98,20 @@ def get_all_values(pymysql_connection, table_name):
     finally:
         return df
 
+def get_pred_type_date(pymysql_connection, table_name, pred_type, date):
+    df = []
+    try:
+        query = "SELECT * FROM " + table_name + " WHERE type = %s AND date(datetime) = %s"
+        df = pd.read_sql_query(query, pymysql_connection,  params=[pred_type, date])
+
+        # Preprocess before used by the model
+        df.drop(['id'], axis=1, inplace=True)
+        df = df.rename(columns={"sensor_idx":"index"})
+    except Exception as err:
+        print("Error occured:", err)
+    finally:
+        return df
+    
 def get_all_preds(pymysql_connection, table_name):
     """
     Retrieves all rows from a certain table 
