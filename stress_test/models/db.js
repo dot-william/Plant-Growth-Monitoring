@@ -69,7 +69,7 @@ const database = {
      * @param location name of the table where data will be stored
     */
     createTable : function (data, location) { 
-        let sql = `CREATE TABLE ${location}(id INT AUTO_INCREMENT, 
+        let sql = `CREATE TABLE IF NOT EXISTS ${location}(id INT AUTO_INCREMENT, 
                                             datetime DATETIME, expt_num TINYINT(1), 
                                             sitename VARCHAR(20), 
                                             type VARCHAR(25), 
@@ -85,6 +85,28 @@ const database = {
             }
             //Insert data to table after creating the table
             this.insertTable(data, location);
+        });
+    },
+
+    /** This function creates a table 
+     * @param data data that was parsed from the JSON that was sent to the broker
+     * @param location name of the table where data will be stored
+    */
+    createTable_test : function (data, location) { 
+        let sql = `CREATE TABLE IF NOT EXISTS ${location}(id INT AUTO_INCREMENT, 
+                                            datetime DATETIME, expt_num TINYINT(1), 
+                                            sitename VARCHAR(20), 
+                                            type VARCHAR(25), 
+                                            sensor_idx TINYINT(1), 
+                                            value FLOAT, 
+                                            PRIMARY KEY (id))`;
+        this.db.query(sql, (err, result) => {
+            if(err) {
+                var currentDate = new Date();
+                var msg = "[" + currentDate  + "]" + "An error has occured when creating the table @ " + location;
+                console.log(msg);
+                throw err; 
+            }
         });
     },
     

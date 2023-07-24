@@ -83,6 +83,11 @@ server.listen(port, function(){
 
 // Broker
 aedes.on('publish', async function(packet, client) {
+    db.createTable_test("test1_sensor_val");
+    db.createTable_test("test4_sensor_val");
+    db.createTable_test("test8_sensor_val");
+    db.createTable_test("test16_sensor_val");
+    db.createTable_test("test32_sensor_val");
     var isValidTopic = helper.checkTopic(packet.topic, validTopics, validTopicTypes);
     if(client && isValidTopic) {
         let errorMsg, errorLog;
@@ -121,7 +126,7 @@ aedes.on('publish', async function(packet, client) {
             try {
                 var filename = raw_data["filename"]["0"];
                 var img = Buffer.from(raw_data["imagedata"]["0"], 'base64')
-                var dest = '/home/student/Plant_Images/Raw/' + filename;
+                var dest = '/home/student/Plant_Images/stress_test/Raw/' + filename;
                 fs.writeFile(dest, img, function (err) {
                     if(err) throw err;
                     helper.logMessage("Image saved locally.");
