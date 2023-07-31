@@ -4,13 +4,8 @@ import pandas as pd
 from datetime import datetime
 import datetime as dt
 import sqlalchemy
-# https://stackoverflow.com/questions/28981770/store-sql-result-in-a-variable-in-python
-
-# Todo: 
-# Create
 
 def create_mysql_connection():
-    """Creates a MySQL Connection and returns the cursor"""
     connection = mysql.connector.connect(host='localhost', 
                                 user='blast', 
                                 password='shift12345', 
@@ -20,7 +15,6 @@ def create_mysql_connection():
     return connection, cursor
 
 def create_pymysql_connection():
-    """Creates a PyMySQL Connection"""
     connection = pymysql.connect(host='localhost', 
                                  user='blast', 
                                  password='shift12345', 
@@ -32,9 +26,7 @@ def create_engine():
     engine = sqlalchemy.create_engine('mysql+pymysql://blast:shift12345@localhost/pgmsdb')
     return engine
 
-#0.1 Closes connection
 def close_mysql_connection(mysql_connection, mysql_cursor):
-    """Closes a MySQL Connection"""
     try:
         mysql_cursor.close()
         mysql_connection.close()
@@ -42,17 +34,6 @@ def close_mysql_connection(mysql_connection, mysql_cursor):
         print("Unsuccessful closing of cursor and connection with error:", err)
     
 def get_values(pymysql_connection, table_name, sensor_idx, sensor_type):
-    """
-    Retrieves all rows from a certain table pertaining to the given sensor index and sensor type 
-    
-    Args:
-        pymysql_connection (object): PyMySql connection
-        table_name (string): name of the table to get values from
-        sensor_idx (string): index of sensor
-        sensor_type (string): type of sensor (e.g. temperature, soil moisture)
-    Returns:
-        Pandas df containing the results of the query given the parameters
-    """
     df = []
     try:
         query = "SELECT * FROM " + table_name + " WHERE sensor_idx = %s AND type = %s"
@@ -76,15 +57,6 @@ def get_sensor_type_values_today(pymysql_connection, table_name, sensor_type, da
     
 
 def get_all_values(pymysql_connection, table_name):
-    """
-    Retrieves all rows from a certain table 
-    
-    Args:
-        pymysql_connection (object): PyMySql connection
-        table_name (string): name of the table to get values from
-    Returns:
-        Pandas df containing the results of the query 
-    """
     df = []
     try:
         query = "SELECT * FROM " + table_name
@@ -113,14 +85,6 @@ def get_pred_type_date(pymysql_connection, table_name, pred_type, date):
         return df
     
 def get_all_preds(pymysql_connection, table_name):
-    """
-    Retrieves all rows from a certain table 
-    
-    Args:
-        table_name (string): name of the table to get values from
-    Returns:
-        Pandas df containing the results of the query 
-    """
     df = []
     try:
         query = "SELECT * FROM " + table_name
@@ -132,7 +96,6 @@ def get_all_preds(pymysql_connection, table_name):
     finally:
         return df
     
-
 def get_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type):
     try:
         query = "SELECT * FROM " + table_name + " WHERE ID=(SELECT MAX(id) FROM " + table_name + " WHERE sensor_idx = %s AND type = %s )"
@@ -144,7 +107,6 @@ def get_latest_data(pymysql_connection, table_name, sensor_idx, sensor_type):
     finally:
         return df
 
-# 4. Function that stores to the table in the DB
 def insert_many_data_table(mysql_connection, mysql_cursor, table_name, array_data):
     query = ("INSERT INTO " + table_name + " (datetime, expt_num, sitename, type, sensor_idx, value) VALUES (%s, %s, %s, %s, %s, %s)")
     for data in array_data:
