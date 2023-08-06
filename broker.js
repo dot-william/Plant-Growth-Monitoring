@@ -36,7 +36,7 @@ const experiment = `cherrytomato`;
 const address = `dlsu`;
 const number = `0`;
 const location = address + '_' + experiment + '_' + number;
-// const location = "test_data_table";
+
 
 app.use(bodyParser.urlencoded({ extended: false }));
 

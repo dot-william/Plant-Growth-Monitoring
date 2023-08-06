@@ -99,11 +99,8 @@ def compute_median_today(date):
         for pred_type in data_types:
             prediction = preds_df[(preds_df["type"] == pred_type)]
             median = prediction["value"].median()
-            # mean = prediction["value"].mean()
             val = make_dict(date, expt_num, pred_type+append_str_median, median)
             vals.append(val)
-            # val = make_dict(date, expt_num, pred_type+append_str_mean, mean)
-            # vals.append(val)
     return vals
 
 def get_specific_pred(pred_type):
